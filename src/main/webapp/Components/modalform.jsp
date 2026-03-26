@@ -15,7 +15,7 @@
             class="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 transition-all transform scale-95 opacity-0"
     >
 
-        <div class="p-2">
+        <div id="container-FormRegisterEmp" class="modal-section hidden">
             <header class="mb-6 border-b pb-2">
                 <h2 class="text-2xl font-bold text-gray-800">Registrar empresa | <span class="text-primary">4TECH</span></h2>
                 <p class="text-sm text-gray-500">Completa la información para crear una nueva cuenta.</p>
@@ -91,6 +91,20 @@
                     </button>
                 </div>
             </form>
+        </div>
+
+        <div id="container-FormRegisterWork" class="modal-section hidden">
+            <header class="mb-6 border-b pb-2">
+                <h2 class="text-2xl font-bold text-gray-800">Registrar Trabajadores</h2>
+            </header>
+            <p>Aquí irá el formulario de trabajadores...</p>
+        </div>
+
+        <div id="container-AdminEmp" class="modal-section hidden">
+            <header class="mb-6 border-b pb-2">
+                <h2 class="text-2xl font-bold text-gray-800">Administrar Empresas</h2>
+            </header>
+            <p>Aquí irá la tabla o lista de administración...</p>
         </div>
             </main>
         </div>
