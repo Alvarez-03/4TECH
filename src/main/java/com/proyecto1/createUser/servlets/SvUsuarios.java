@@ -69,8 +69,8 @@ public class SvUsuarios extends HttpServlet {
         String direccion = req.getParameter("direccion");
 
         // Manejo de error si el teléfono viene vacío
-        String telStr = req.getParameter("telefono");
-        Integer telefono = (telStr != null && !telStr.isEmpty()) ? Integer.valueOf(telStr) : 0;
+        Integer telefono = Integer.valueOf(req.getParameter("telefono"));
+
 
         String siglas = req.getParameter("siglas");
         String estado = "ACTIVO"; // Por defecto al registrar
@@ -90,11 +90,13 @@ public class SvUsuarios extends HttpServlet {
         int resultado = dao.registrar(nuevaEmp);
 
         if (resultado > 0) {
-            // Si se registró bien, refrescamos la lista y volvemos al dashboard
-            doGet(req, resp);
+            // En lugar de redirigir, mandamos un código 200 (OK)
+            resp.setStatus(HttpServletResponse.SC_OK);
+            // Opcional: puedes enviar un mensaje de texto
+            resp.getWriter().write("Registro completado");
         } else {
-            req.setAttribute("error", "No se pudo registrar la empresa.");
-            req.getRequestDispatcher("registrar_empresa.jsp").forward(req, resp);
+            // Mandamos un código de error
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar");
         }
     }
 }
