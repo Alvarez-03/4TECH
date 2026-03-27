@@ -41,34 +41,39 @@ function abrirModal(button) {
 }
 
 function abrirModalEditar(button) {
-    // 1. Abrimos el modal con el ID del contenedor de actualización
     const type = button.getAttribute('data-type'); // "UpdEmp"
     abrirModal(button);
 
-    // 2. Buscamos el contenedor del formulario de actualización
-    const form = document.querySelector('#container-UpdEmp #formRegistro');
+    // 1. Buscamos el formulario específico por su ID único
+    const form = document.getElementById('formUpdEmp');
+    if (!form) return;
 
-    // 3. Llenamos los campos usando los atributos 'data-' del botón de la tabla
-    form.querySelector('#nombre').value = button.getAttribute('data-nombre');
-    form.querySelector('#siglas').value = button.getAttribute('data-siglas');
-    form.querySelector('#telefono').value = button.getAttribute('data-telefono');
+    // 2. Llenamos los campos usando el atributo 'name' para evitar conflictos de ID
+    form.querySelector('input[name="nombre"]').value = button.getAttribute('data-nombre');
+    form.querySelector('input[name="siglas"]').value = button.getAttribute('data-siglas');
+    form.querySelector('input[name="telefono"]').value = button.getAttribute('data-telefono');
+    form.querySelector('input[name="ciudad"]').value = button.getAttribute('data-ciudad');
+    form.querySelector('input[name="direccion"]').value = button.getAttribute('data-direccion');
 
-
-    const inputEmail = form.querySelector('#email');
-    const estado = button.getAttribute('data-estado');
-    if (estado) {
-        form.querySelector('#estado').value = estado;
-    }
+    // 3. Manejo del Email (Readonly)
+    const inputEmail = form.querySelector('input[name="email"]');
     inputEmail.value = button.getAttribute('data-email');
     inputEmail.readOnly = true;
     inputEmail.classList.add('bg-gray-200', 'cursor-not-allowed');
 
-    form.querySelector('#ciudad').value = button.getAttribute('data-ciudad');
-    form.querySelector('#direccion').value = button.getAttribute('data-direccion');
+    // 4. Manejo del Estado (Select)
+    const selectEstado = form.querySelector('select[name="estado"]');
+    const estado = button.getAttribute('data-estado');
+    if (selectEstado && estado) {
+        selectEstado.value = estado;
+    }
 
-
-    form.querySelector('#password').value = "";
-    form.querySelector('#password').required = false;
+    // 5. Password siempre limpio en edición
+    const inputPass = form.querySelector('input[name="password"]');
+    if (inputPass) {
+        inputPass.value = "";
+        inputPass.required = false;
+    }
 }
 
 function cerrarModal() {
