@@ -82,9 +82,6 @@
                                 class="text-blue-600 hover:text-blue-900 mx-2">
                             <i class="fa-solid fa-pen-to-square text-lg"></i>
                         </button>
-                        <button class="text-red-600 hover:text-red-900 mx-2" title="Eliminar">
-                            <i class="fa-solid fa-trash text-lg"></i>
-                        </button>
                     </td>
                 </tr>
                 <%
