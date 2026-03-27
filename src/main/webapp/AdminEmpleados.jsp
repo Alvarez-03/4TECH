@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="resources/ControlModal.js"></script>
+    <script src="resources/ControlAdminEmpleado.js"></script>
 
     <meta charset="utf-8">
     <title>Administrar empleados | 4TECH</title>
