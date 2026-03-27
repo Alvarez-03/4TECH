@@ -55,6 +55,9 @@ public class SvEmpleados extends HttpServlet {
                 case "cambiarEstado":
                     cambiarEstadoEmpleado(request, response);
                     break;
+                case "actualizar":
+                    actualizarEmpleado(request, response);
+                    break;
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     break;
@@ -88,6 +91,41 @@ public class SvEmpleados extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void actualizarEmpleado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            // 1. Capturar datos (Igual que el registro)
+            int ID = Integer.parseInt(req.getParameter("ID"));
+            String nombre = req.getParameter("nombre");
+            String email = req.getParameter("email");
+            String telefono = req.getParameter("telefono");
+            String cargo = req.getParameter("cargo");
+            String password = req.getParameter("password");
+            int empresaId = Integer.parseInt(req.getParameter("empresa_id"));
+
+            // 2. Crear objeto con los datos
+            Empleado empEdit = new Empleado();
+            empEdit.setID(ID);
+            empEdit.setNombre(nombre);
+            empEdit.setEmail(email);
+            empEdit.setTelefono(telefono);
+            empEdit.setCargo(cargo);
+            empEdit.setPassword(password);
+            empEdit.setEmpresa_id(empresaId);
+
+            // 3. Ejecutar actualización
+            int res = dao.actualizar(empEdit);
+
+            if (res > 0) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            System.err.println("Error en Servlet Actualizar: " + e);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 

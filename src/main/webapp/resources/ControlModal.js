@@ -12,7 +12,10 @@ function abrirModal(button) {
     console.log("Abrir modal tipo:", type);
 
     if (type === 'FormRegisterWork') {
-        cargarEmpresasDinamicas();
+        cargarEmpresasDinamicas('selectEmpresaRegistro');
+    }
+    else if (type === 'UpdWork') {
+        cargarEmpresasDinamicas('selectEmpresaActualizar');
     }
 
     // 1. Ocultar TODAS las secciones del modal primero
@@ -83,6 +86,10 @@ function cerrarModal() {
             title: '¿No actualizar los datos de la empresa?',
             text: 'La información modifica no se guardará.'
         },
+        'UpdWork': {
+            title: '¿No actualizar colaborador?',
+            text: 'Las modificaciones realizadas al trabajador se perderán.'
+        },
     };
 
     // Obtenemos el mensaje según el tipo actual o uno por defecto
@@ -150,11 +157,10 @@ function enviarFormulario(event) {
                         window.location.href = "SvUsuarios";
                     }
 
-                    else if (tipoModalActual === 'FormRegisterWork') {
+                    else if (tipoModalActual === 'FormRegisterWork' || tipoModalActual === 'UpdWork') {
                         window.location.href = "SvEmpleados";
                     }
 
-                    // Para cualquier otro caso (Login, etc.), dejar que el Servlet maneje la respuesta
                     else {
                         location.reload();
                     }
@@ -175,13 +181,11 @@ function enviarFormulario(event) {
 }
 
 // Función para cargar las empresas desde el Servlet
-function cargarEmpresasDinamicas() {
-    const select = document.getElementById('selectEmpresaRegistro');
+function cargarEmpresasDinamicas(idDelSelect) {
+    const select = document.getElementById(idDelSelect);
 
-    // Si el select no existe (porque no es SuperAdmin), no hacemos nada
     if (!select) return;
 
-    // Llamamos al doGet de SvUsuarios con el parámetro accion
     fetch('SvUsuarios?accion=listarActivas')
         .then(response => {
             if (!response.ok) throw new Error('Error en la red');
@@ -189,7 +193,6 @@ function cargarEmpresasDinamicas() {
         })
         .then(data => {
             select.innerHTML = '<option value="" disabled selected>Seleccione una empresa...</option>';
-
             data.forEach(emp => {
                 const option = document.createElement('option');
                 option.value = emp.id;
@@ -201,6 +204,30 @@ function cargarEmpresasDinamicas() {
             console.error('Error:', error);
             select.innerHTML = '<option value="">Error al cargar empresas</option>';
         });
+}
+
+function abrirModalActualizarTrabajador(button) {
+
+    abrirModal(button);
+
+    const form = document.querySelector('#container-UpdWork');
+    const idEmpresaActual = button.getAttribute('data-empresa-id');
+
+    // Llenar campos con los atributos data- del botón
+    if(form){
+        form.querySelector('input[name="ID"]').value = button.getAttribute('data-id');
+        form.querySelector('input[name="nombre"]').value = button.getAttribute('data-nombre');
+        form.querySelector('input[name="email"]').value = button.getAttribute('data-email');
+        form.querySelector('input[name="telefono"]').value = button.getAttribute('data-telefono');
+        form.querySelector('input[name="cargo"]').value = button.getAttribute('data-cargo');
+
+        setTimeout(() => {
+            const selectEmp = form.querySelector('select[name="empresa_id"]');
+            if (selectEmp && idEmpresaActual) {
+                selectEmp.value = idEmpresaActual;
+            }
+        }, 350);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {

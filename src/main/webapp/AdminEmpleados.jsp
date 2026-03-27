@@ -110,13 +110,14 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
                         <div class="flex justify-center items-center gap-2">
-                            <button onclick="abrirModalEditar(this)"
+                            <button onclick="abrirModalActualizarTrabajador(this)"
                                     data-type="UpdWork"
                                     data-id="<%= emp.getID() %>"
                                     data-nombre="<%= emp.getNombre() %>"
                                     data-cargo="<%= emp.getCargo() %>"
                                     data-email="<%= emp.getEmail() %>"
                                     data-telefono="<%= emp.getTelefono() %>"
+                                    data-empresa-id="<%= emp.getEmpresa_id() %>"
                                     class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-all"
                                     title="Editar Datos">
                                 <i class="fa-solid fa-pen-to-square text-lg"></i>

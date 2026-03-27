@@ -32,8 +32,30 @@ public class EmpleadoDAO {
             System.err.println("Error al registrar empleado: " + e);
             return 0;
         }finally {
-            // SIEMPRE cierra los recursos
             try { if(ps != null) ps.close(); if(con != null) con.close(); } catch(Exception e){}
+        }
+    }
+    // Actualizar colaborador
+    public int actualizar(Empleado emp) {
+        String sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=?, empresa_id=? WHERE ID=?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, emp.getNombre());
+            ps.setString(2, emp.getEmail());
+            ps.setString(3, emp.getTelefono());
+            ps.setString(4, emp.getCargo());
+            ps.setString(5, emp.getPassword());
+            ps.setInt(6, emp.getEmpresa_id());
+            ps.setInt(7, emp.getID()); // El ID del WHERE
+
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("Error al actualizar empleado en DAO: " + e);
+            return 0;
+        } finally {
+            try { if (ps != null) ps.close(); if (con != null) con.close(); } catch (Exception e) {}
         }
     }
 
