@@ -89,4 +89,33 @@ public class EmpresaDAO {
             return false;
         }
     }
+
+    public int actualizar(Empresa emp) {
+        // El password solo se cambia si el valor enviado no es NULL
+        String sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, "
+                + "password = IFNULL(?, password), estado=?, update_at=? WHERE email=?";
+
+        String fechaActual = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, emp.getNombre());
+            ps.setString(2, emp.getCiudad());
+            ps.setString(3, emp.getDireccion());
+            ps.setInt(4, emp.getTelefono());
+            ps.setString(5, emp.getSiglas());
+            ps.setString(6, emp.getPassword());
+            ps.setString(7, emp.getEstado());
+            ps.setString(8, fechaActual);
+            ps.setString(9, emp.getEmail());
+
+
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("Error en DAO actualizar: " + e);
+            return 0;
+        }
+    }
 }

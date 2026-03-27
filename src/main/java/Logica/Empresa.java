@@ -12,6 +12,8 @@ public class Empresa {
     private String update_at;
     private String password;;
 
+    public Empresa() {
+    }
 
     public Empresa(String email, String nombre, String ciudad, String direccion, Integer telefono, String siglas, String estado, String created_at, String update_at, String password) {
         this.email = email;

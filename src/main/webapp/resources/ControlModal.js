@@ -31,6 +31,37 @@ function abrirModal(button) {
     }, 10);
 }
 
+function abrirModalEditar(button) {
+    // 1. Abrimos el modal con el ID del contenedor de actualización
+    const type = button.getAttribute('data-type'); // "UpdEmp"
+    abrirModal(button);
+
+    // 2. Buscamos el contenedor del formulario de actualización
+    const form = document.querySelector('#container-UpdEmp #formRegistro');
+
+    // 3. Llenamos los campos usando los atributos 'data-' del botón de la tabla
+    form.querySelector('#nombre').value = button.getAttribute('data-nombre');
+    form.querySelector('#siglas').value = button.getAttribute('data-siglas');
+    form.querySelector('#telefono').value = button.getAttribute('data-telefono');
+
+
+    const inputEmail = form.querySelector('#email');
+    const estado = button.getAttribute('data-estado');
+    if (estado) {
+        form.querySelector('#estado').value = estado;
+    }
+    inputEmail.value = button.getAttribute('data-email');
+    inputEmail.readOnly = true;
+    inputEmail.classList.add('bg-gray-200', 'cursor-not-allowed');
+
+    form.querySelector('#ciudad').value = button.getAttribute('data-ciudad');
+    form.querySelector('#direccion').value = button.getAttribute('data-direccion');
+
+
+    form.querySelector('#password').value = "";
+    form.querySelector('#password').required = false;
+}
+
 function cerrarModal() {
     // Definimos los mensajes por tipo
     const mensajes = {
@@ -42,10 +73,10 @@ function cerrarModal() {
             title: '¿Cancelar registro de trabajador?',
             text: 'La información del empleado no se guardará.'
         },
-        'AdminEmp': {
-            title: '¿Cerrar administración?',
-            text: 'Se cerrará la vista de gestión de empresas.'
-        }
+        'UpdEmp': {
+            title: '¿No actualizar los datos de la empresa?',
+            text: 'La información modifica no se guardará.'
+        },
     };
 
     // Obtenemos el mensaje según el tipo actual o uno por defecto
@@ -88,39 +119,56 @@ function ejecutarCierreEfectivo() {
 
 
 function enviarFormulario(event) {
-    event.preventDefault(); // Evita que la página se recargue
+    event.preventDefault();
 
     const form = event.target;
     const formData = new FormData(form);
 
-    // Enviamos los datos al Servlet usando fetch
     fetch(form.action, {
         method: 'POST',
         body: new URLSearchParams(formData)
     })
         .then(response => {
             if (response.ok) {
-                // --- ¡ÉXITO! ---
                 Swal.fire({
                     icon: 'success',
-                    title: '¡Registro Exitoso!',
-                    text: 'La empresa ha sido creada correctamente.',
+                    title: '¡Operación Exitosa!',
+                    text: 'Los datos se han procesado correctamente.',
+                    confirmButtonColor: '#1d4ed8',
                 }).then(() => {
-                    ejecutarCierreEfectivo()
+                    ejecutarCierreEfectivo();
+
+                    // --- LÓGICA DE REDIRECCIÓN SELECTIVA ---
+
+                    // Si el modal era de Actualizar Empresa o Registrar Empresa,
+                    // vamos al Servlet para refrescar la tabla de empresas.
+                    if (tipoModalActual === 'UpdEmp' || tipoModalActual === 'FormRegisterEmp') {
+                        window.location.href = "SvUsuarios";
+                    }
+
+                    // Si fuera el de trabajadores, podrías mandarlo a otro lado:
+                    else if (tipoModalActual === 'FormRegisterWork') {
+                        // window.location.href = "SvTrabajadores"; (Ejemplo)
+                        location.reload(); // O simplemente recargar la actual
+                    }
+
+                    // Para cualquier otro caso (Login, etc.), dejar que el Servlet maneje la respuesta
+                    else {
+                        location.reload();
+                    }
                 });
 
             } else {
-                console.error("Error:", error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Upps',
-                    text: 'Registro no exitoso.',
+                    text: 'No se pudo completar la acción.',
                 });
             }
         })
         .catch(error => {
-            console.error("Error en la petición:", error);
-            alert("No se pudo conectar con el servidor.");
+            console.error("Error:", error);
+            alert("Error de comunicación con el servidor.");
         });
 }
 

@@ -23,7 +23,7 @@ public class SvUsuarios extends HttpServlet {
 
         HttpSession sesion = req.getSession();
         sesion.setAttribute("listEmpresa", lista);
-        resp.sendRedirect("DashboardSA.jsp");
+        resp.sendRedirect("AdministrarEmpresas.jsp");
     }
 
     // El POST lo usaremos para el LOGIN o para REGISTRAR (según un parámetro)
@@ -35,6 +35,8 @@ public class SvUsuarios extends HttpServlet {
             procesarLogin(req, resp);
         } else if ("registrar".equals(accion)) {
             procesarRegistro(req, resp);
+        } else if ("actualizarEmp".equals(accion)) {
+            procesarEdicion(req, resp);
         }
     }
 
@@ -99,4 +101,45 @@ public class SvUsuarios extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar");
         }
     }
+
+    private void procesarEdicion(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 1. Capturar datos del request
+        String email = req.getParameter("email");
+        String nombre = req.getParameter("nombre");
+        String estado = req.getParameter("estado");
+        String ciudad = req.getParameter("ciudad");
+        String direccion = req.getParameter("direccion");
+        Integer telefono = Integer.valueOf(req.getParameter("telefono"));
+        String siglas = req.getParameter("siglas");
+        String password = req.getParameter("password");
+
+        // 2. Instanciar usando el constructor vacío que acabamos de crear
+        Empresa empEditada = new Empresa();
+
+        // 3. Llenar los datos
+        empEditada.setEmail(email);
+        empEditada.setNombre(nombre);
+        empEditada.setEstado(estado);
+        empEditada.setCiudad(ciudad);
+        empEditada.setDireccion(direccion);
+        empEditada.setTelefono(telefono);
+        empEditada.setSiglas(siglas);
+
+        // Solo asignar password si el usuario escribió algo en el modal
+        if(password != null && !password.trim().isEmpty()) {
+            empEditada.setPassword(password);
+        }
+
+        // 4. Enviar al DAO
+        EmpresaDAO dao = new EmpresaDAO();
+        int resultado = dao.actualizar(empEditada);
+
+        if (resultado > 0) {
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
