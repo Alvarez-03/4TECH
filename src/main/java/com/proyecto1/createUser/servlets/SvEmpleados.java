@@ -38,7 +38,7 @@ public class SvEmpleados extends HttpServlet {
 
         // 2. Guardar lista en sesión y redirigir al JSP
         sesion.setAttribute("listEmpleados", lista);
-        response.sendRedirect("AdministrarEmpleados.jsp");
+        response.sendRedirect("AdminEmpleados.jsp");
     }
 
     @Override
@@ -64,14 +64,16 @@ public class SvEmpleados extends HttpServlet {
 
     private void registrarEmpleado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Capturar datos del formulario
+        int ID = Integer.parseInt(req.getParameter("ID"));
         String nombre = req.getParameter("nombre");
         String email = req.getParameter("email");
-        int telefono = Integer.parseInt(req.getParameter("telefono"));
+        String telefono = req.getParameter("telefono");
         String cargo = req.getParameter("cargo");
         String password = req.getParameter("password");
         int empresaId = Integer.parseInt(req.getParameter("empresa_id"));
 
         Empleado nuevo = new Empleado();
+        nuevo.setID(ID);
         nuevo.setNombre(nombre);
         nuevo.setEmail(email);
         nuevo.setTelefono(telefono);

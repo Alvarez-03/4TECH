@@ -54,6 +54,7 @@ public class EmpresaDAO {
                 // Creamos un objeto vacío (puedes usar un constructor vacío si lo creas en la clase Empresa)
                 // O pasarle valores por defecto al constructor largo:
                 Empresa emp = new Empresa(
+                        rs.getInt("ID"),
                         rs.getString("email"),
                         rs.getString("nombre"),
                         rs.getString("ciudad"),

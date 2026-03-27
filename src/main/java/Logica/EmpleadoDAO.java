@@ -15,21 +15,25 @@ public class EmpleadoDAO {
 
     // 1. REGISTRAR
     public int registrar(Empleado emp) {
-        String sql = "INSERT INTO empleado (nombre, email, telefono, cargo, estado, password, empresa_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO empleado (ID,nombre, email, telefono, cargo, estado, password, empresa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
-            ps.setString(1, emp.getNombre());
-            ps.setString(2, emp.getEmail());
-            ps.setInt(3, emp.getTelefono());
-            ps.setString(4, emp.getCargo());
-            ps.setString(5, emp.getEstado());
-            ps.setString(6, emp.getPassword());
-            ps.setInt(7, emp.getEmpresa_id()); // FK
+            ps.setInt(1, emp.getID());
+            ps.setString(2, emp.getNombre());
+            ps.setString(3, emp.getEmail());
+            ps.setString(4, emp.getTelefono());
+            ps.setString(5, emp.getCargo());
+            ps.setString(6, emp.getEstado());
+            ps.setString(7, emp.getPassword());
+            ps.setInt(8, emp.getEmpresa_id()); // FK
             return ps.executeUpdate();
         } catch (Exception e) {
             System.err.println("Error al registrar empleado: " + e);
             return 0;
+        }finally {
+            // SIEMPRE cierra los recursos
+            try { if(ps != null) ps.close(); if(con != null) con.close(); } catch(Exception e){}
         }
     }
 
@@ -46,7 +50,7 @@ public class EmpleadoDAO {
                         rs.getInt("ID"),
                         rs.getString("nombre"),
                         rs.getString("email"),
-                        rs.getInt("telefono"),
+                        rs.getString("telefono"),
                         rs.getString("cargo"),
                         rs.getString("estado"),
                         rs.getString("password"),
@@ -71,7 +75,7 @@ public class EmpleadoDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Empleado emp = new Empleado();
-                emp.setId(rs.getInt("ID"));
+                emp.setID(rs.getInt("ID"));
                 emp.setNombre(rs.getString("nombre"));
                 emp.setCargo(rs.getString("cargo"));
                 emp.setEstado(rs.getString("estado"));

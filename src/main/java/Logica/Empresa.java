@@ -1,6 +1,7 @@
 package Logica;
 
 public class Empresa {
+    private Integer ID;
     private String email;
     private String nombre;
     private String ciudad;
@@ -15,7 +16,8 @@ public class Empresa {
     public Empresa() {
     }
 
-    public Empresa(String email, String nombre, String ciudad, String direccion, Integer telefono, String siglas, String estado, String created_at, String update_at, String password) {
+    public Empresa(Integer ID, String email, String nombre, String ciudad, String direccion, Integer telefono, String siglas, String estado, String created_at, String update_at, String password) {
+        this.ID = ID;
         this.email = email;
         this.nombre = nombre;
         this.ciudad = ciudad;
@@ -26,6 +28,14 @@ public class Empresa {
         this.created_at = created_at;
         this.update_at = update_at;
         this.password = password;
+    }
+
+    public Integer getID() {
+        return ID;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
     }
 
     public String getEmail() {

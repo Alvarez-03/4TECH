@@ -18,9 +18,34 @@ public class SvUsuarios extends HttpServlet {
     // El GET lo usaremos para LISTAR las empresas en el Dashboard
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String accion = req.getParameter("accion");
         EmpresaDAO dao = new EmpresaDAO();
-        List<Empresa> lista = dao.listar();
 
+        // 1. Respuesta rápida JSON para el select del modal de empleados
+        if ("listarActivas".equals(accion)) {
+            List<Empresa> lista = dao.listar();
+            StringBuilder json = new StringBuilder("[");
+            boolean primero = true;
+
+            for (Empresa e : lista) {
+                if ("ACTIVO".equals(e.getEstado())) {
+                    if (!primero) json.append(",");
+                    // Usamos e.getId() que es el valor automático de la BD
+                    json.append("{\"id\":").append(e.getID())
+                            .append(", \"nombre\":\"").append(e.getNombre()).append("\"}");
+                    primero = false;
+                }
+            }
+            json.append("]");
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write(json.toString());
+            return;
+        }
+
+        // 2. Listado normal para la tabla de Administrar Empresas
+        List<Empresa> lista = dao.listar();
         HttpSession sesion = req.getSession();
         sesion.setAttribute("listEmpresa", lista);
         resp.sendRedirect("AdministrarEmpresas.jsp");
@@ -64,41 +89,36 @@ public class SvUsuarios extends HttpServlet {
     }
 
     private void procesarRegistro(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 1. Obtener Datos del formulario
         String email = req.getParameter("email");
         String nombre = req.getParameter("nombre");
         String ciudad = req.getParameter("ciudad");
         String direccion = req.getParameter("direccion");
-
-        // Manejo de error si el teléfono viene vacío
         Integer telefono = Integer.valueOf(req.getParameter("telefono"));
-
-
         String siglas = req.getParameter("siglas");
-        String estado = "ACTIVO"; // Por defecto al registrar
-
-        // Generar fechas automáticamente si no vienen del form
-        String fechaActual = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-        String created_at = fechaActual;
-        String update_at = fechaActual;
-
         String password = req.getParameter("password");
 
-        // 2. Empaquetar con el constructor completo que definiste en tu clase Empresa
-        Empresa nuevaEmp = new Empresa(email, nombre, ciudad, direccion, telefono, siglas, estado, created_at, update_at, password);
+        String fechaActual = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 
-        // 3. Guardar en la BD
+        Empresa nuevaEmp = new Empresa();
+        nuevaEmp.setEmail(email);
+        nuevaEmp.setNombre(nombre);
+        nuevaEmp.setCiudad(ciudad);
+        nuevaEmp.setDireccion(direccion);
+        nuevaEmp.setTelefono(telefono);
+        nuevaEmp.setSiglas(siglas);
+        nuevaEmp.setEstado("ACTIVO");
+        nuevaEmp.setCreated_at(fechaActual);
+        nuevaEmp.setUpdate_at(fechaActual);
+        nuevaEmp.setPassword(password);
+
         EmpresaDAO dao = new EmpresaDAO();
         int resultado = dao.registrar(nuevaEmp);
 
         if (resultado > 0) {
-            // En lugar de redirigir, mandamos un código 200 (OK)
             resp.setStatus(HttpServletResponse.SC_OK);
-            // Opcional: puedes enviar un mensaje de texto
             resp.getWriter().write("Registro completado");
         } else {
-            // Mandamos un código de error
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

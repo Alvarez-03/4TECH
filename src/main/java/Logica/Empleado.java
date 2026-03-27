@@ -1,10 +1,10 @@
 package Logica;
 
 public class Empleado {
-    private int id;
+    private int ID;
     private String nombre;
     private String email;
-    private int telefono;
+    private String telefono;
     private String cargo;
     private String estado;
     private String password;
@@ -13,8 +13,8 @@ public class Empleado {
     public Empleado(){
     }
 
-    public Empleado(int id, String nombre, String email, int telefono, String cargo, String estado, String password, int empresa_id) {
-        this.id = id;
+    public Empleado(int ID, String nombre, String email, String telefono, String cargo, String estado, String password, int empresa_id) {
+        this.ID = ID;
         this.nombre = nombre;
         this.email = email;
         this.telefono = telefono;
@@ -24,12 +24,12 @@ public class Empleado {
         this.empresa_id = empresa_id;
     }
 
-    public int getId() {
-        return id;
+    public int getID() {
+        return ID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getNombre() {
@@ -48,11 +48,11 @@ public class Empleado {
         this.email = email;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 

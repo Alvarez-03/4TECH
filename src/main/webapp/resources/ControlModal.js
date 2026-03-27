@@ -4,10 +4,16 @@ let tipoModalActual = "";
 function abrirModal(button) {
     const modal = document.getElementById('miModal');
     const modalContent = document.getElementById('modalContent');
-    const type = button.getAttribute('data-type'); // Ejemplo: "FormRegisterEmp"
+    const type = button.getAttribute('data-type');
     tipoModalActual = type;
 
     if (!modal) return;
+
+    console.log("Abrir modal tipo:", type);
+
+    if (type === 'FormRegisterWork') {
+        cargarEmpresasDinamicas();
+    }
 
     // 1. Ocultar TODAS las secciones del modal primero
     document.querySelectorAll('.modal-section').forEach(section => {
@@ -140,16 +146,12 @@ function enviarFormulario(event) {
 
                     // --- LÓGICA DE REDIRECCIÓN SELECTIVA ---
 
-                    // Si el modal era de Actualizar Empresa o Registrar Empresa,
-                    // vamos al Servlet para refrescar la tabla de empresas.
                     if (tipoModalActual === 'UpdEmp' || tipoModalActual === 'FormRegisterEmp') {
                         window.location.href = "SvUsuarios";
                     }
 
-                    // Si fuera el de trabajadores, podrías mandarlo a otro lado:
                     else if (tipoModalActual === 'FormRegisterWork') {
-                        // window.location.href = "SvTrabajadores"; (Ejemplo)
-                        location.reload(); // O simplemente recargar la actual
+                        window.location.href = "SvEmpleados";
                     }
 
                     // Para cualquier otro caso (Login, etc.), dejar que el Servlet maneje la respuesta
@@ -169,6 +171,35 @@ function enviarFormulario(event) {
         .catch(error => {
             console.error("Error:", error);
             alert("Error de comunicación con el servidor.");
+        });
+}
+
+// Función para cargar las empresas desde el Servlet
+function cargarEmpresasDinamicas() {
+    const select = document.getElementById('selectEmpresaRegistro');
+
+    // Si el select no existe (porque no es SuperAdmin), no hacemos nada
+    if (!select) return;
+
+    // Llamamos al doGet de SvUsuarios con el parámetro accion
+    fetch('SvUsuarios?accion=listarActivas')
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la red');
+            return response.json();
+        })
+        .then(data => {
+            select.innerHTML = '<option value="" disabled selected>Seleccione una empresa...</option>';
+
+            data.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = emp.nombre;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            select.innerHTML = '<option value="">Error al cargar empresas</option>';
         });
 }
 
