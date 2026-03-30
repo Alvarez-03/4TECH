@@ -59,11 +59,6 @@
     <finalName>4TECH</finalName>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
-          <plugin>
-              <groupId>org.eclipse.jetty</groupId>
-              <artifactId>jetty-maven-plugin</artifactId>
-              <version>12.0.5</version></version>
-          </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
@@ -99,7 +94,12 @@
           <plugin>
               <groupId>org.eclipse.jetty</groupId>
               <artifactId>jetty-maven-plugin</artifactId>
-              <version>11.0.15</version>
+              <version>12.0.5</version>
+              <configuration>
+                  <httpConnector>
+                      <port>8080</port>
+                  </httpConnector>
+              </configuration>
           </plugin>
           <plugin>
               <groupId>org.jetbrains.kotlin</groupId>
