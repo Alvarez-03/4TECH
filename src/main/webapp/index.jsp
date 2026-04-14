@@ -75,9 +75,14 @@
 
         <%
             String error = (String) request.getAttribute("errorLogin");
+            String debug = (String) request.getAttribute("debugMsg");
+
             if (error != null) {
         %>
             <script>
+                console.error("Error de Login: <%= error %>");
+                console.warn("Detalles técnicos: <%= debug %>");
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Credenciales incorrectas',

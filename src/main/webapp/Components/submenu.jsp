@@ -48,10 +48,13 @@
                     </a>
                 <%} else{%>
                     <a href="DashboardSA.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
-                        <i class="fa-utility-fill fa-semibold fa-grid-2"></i> Dashboard
+                        <i class="fa-solid fa-receipt"></i>Ordenes
+                    </a>
+                    <a href="DashboardSA.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
+                        <i class="fa-solid fa-boxes-stacked"></i> Inventario
                     </a>
                     <a href="perfil.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
-                        <i class="fa-solid fa-user"></i> Mi Perfil
+                        <i class="fa-solid fa-users-gear"></i> Recursos humanos
                     </a>
                 <%}%>
                 <a href="DashboardSA.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">

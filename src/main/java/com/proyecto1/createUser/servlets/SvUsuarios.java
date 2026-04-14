@@ -80,7 +80,7 @@ public class SvUsuarios extends HttpServlet {
                 resp.sendRedirect("DashboardSA.jsp");
             } else {
                 sesion.setAttribute("PERMISOS", "EMPRESA");
-                resp.sendRedirect("index.jsp");
+                resp.sendRedirect("DashboardSA.jsp");
             }
         } else {
             req.setAttribute("errorLogin", "Correo o contraseña incorrectos.");
