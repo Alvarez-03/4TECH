@@ -70,11 +70,13 @@ public class SvUsuarios extends HttpServlet {
         String password = req.getParameter("password");
 
         EmpresaDAO dao = new EmpresaDAO();
-        boolean puedeEntrar = dao.validarAcceso(email, password);
+        Empresa empresaLogueada = dao.validarAcceso(email, password);
 
-        if (puedeEntrar) {
+        if (empresaLogueada != null) {
             HttpSession sesion = req.getSession();
-            // Lógica de permisos
+
+            sesion.setAttribute("usuarioLogueado", empresaLogueada);
+
             if (Objects.equals(email, "superadmin@gmail.com")) {
                 sesion.setAttribute("PERMISOS", "SUPERADMIN");
                 resp.sendRedirect("DashboardSA.jsp");

@@ -75,8 +75,9 @@ public class EmpresaDAO {
     }
 
     // 3. VALIDAR ACCESO (Login)
-    public boolean validarAcceso(String email, String pass) {
+    public Empresa validarAcceso(String email, String pass) {
         String sql = "SELECT * FROM empresa WHERE email = ? AND password = ?";
+        Empresa emp = null;
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -84,11 +85,23 @@ public class EmpresaDAO {
             ps.setString(2, pass);
             rs = ps.executeQuery();
 
-            return rs.next();
+            if (rs.next()) {
+                emp = new Empresa();
+                emp.setID(rs.getInt("ID"));
+                emp.setEmail(rs.getString("email"));
+                emp.setNombre(rs.getString("nombre"));
+                emp.setCiudad(rs.getString("ciudad"));
+                emp.setDireccion(rs.getString("direccion"));
+                emp.setTelefono(rs.getInt("telefono"));
+                emp.setSiglas(rs.getString("siglas"));
+                emp.setEstado(rs.getString("estado"));
+                emp.setCreated_at(rs.getString("created_at"));
+                emp.setUpdate_at(rs.getString("update_at"));
+            }
         } catch (Exception e) {
             System.err.println("Error en validarAcceso: " + e);
-            return false;
         }
+        return emp;
     }
 
     public int actualizar(Empresa emp) {

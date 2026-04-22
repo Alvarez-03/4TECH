@@ -1,3 +1,4 @@
+<%@ page import="Logica.Empresa" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -11,21 +12,24 @@
     <script src="resources/ControlModal.js"></script>
 
     <meta charset="utf-8">
-    <title>DASHBOARD | SUPER ADMIN</title>
+    <title>DASHBOARD</title>
 </head>
 <body class="min-h-screen">
     <%
-        String PERMISOS_DASH= (session.getAttribute("PERMISOS") != null)
-            ? (String)session.getAttribute("PERMISOS")
-            : "EMPRESA";
+        String PERMISOS_DASH = (session.getAttribute("PERMISOS") != null)
+                ? (String) session.getAttribute("PERMISOS")
+                : "EMPRESA";
 
-        if (PERMISOS_DASH.equals("SUPERADMIN")) {
+        if ("SUPERADMIN".equals(PERMISOS_DASH)) {
             request.setAttribute("titulo", "Dashboard Super Admin");
-        } else{
-            String EMPRESA = (session.getAttribute("EMPRESA") != null)
-            ? (String)session.getAttribute("EMPRESA")
-            : "4TECH";
-            request.setAttribute("titulo", EMPRESA);
+        } else {
+            Empresa emp = (Empresa) session.getAttribute("usuarioLogueado");
+
+            if (emp != null) {
+                request.setAttribute("titulo", emp.getNombre());
+            } else {
+                request.setAttribute("titulo", "Panel de Empresa");
+            }
         }
     %>
     <%@include file="/Components/header.jsp" %>
