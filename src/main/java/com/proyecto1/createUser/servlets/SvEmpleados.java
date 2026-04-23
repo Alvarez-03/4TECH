@@ -2,6 +2,8 @@ package com.proyecto1.createUser.servlets;
 
 import Logica.Empleado;
 import Logica.EmpleadoDAO;
+import Logica.Empresa;
+
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -21,12 +23,45 @@ public class SvEmpleados extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession sesion = request.getSession();
-
-        // 1. Obtener el ID de la empresa de la sesión (asumiendo que lo guardaste al loguear)
-        // Si no tienes el ID en sesión, por ahora listaremos todos
         Integer idEmpresaSesion = (Integer) sesion.getAttribute("ID_EMPRESA");
+        String accion = request.getParameter("accion");
 
         List<Empleado> lista;
+
+        if ("listarPorEmpresaJSON".equals(accion)) {
+            // Obtenemos el objeto de la sesión que guardamos en el login
+            Empresa empLogueada = (Logica.Empresa) sesion.getAttribute("usuarioLogueado");
+
+            if (empLogueada != null) {
+                System.out.println("ID EMPRESA ENCONTRADO: " + empLogueada.getID());
+            } else {
+                System.out.println("ERROR: La sesión 'usuarioLogueado' está VACÍA.");
+            }
+
+            StringBuilder json = new StringBuilder("[");
+            if (empLogueada != null) {
+                List<Empleado> listaEmp = dao.listarPorEmpresa(empLogueada.getID());
+                boolean primero = true;
+
+                for (Empleado emp : listaEmp) {
+                    if ("ACTIVO".equals(emp.getEstado())) {
+                        if (!primero) json.append(",");
+                        json.append("{")
+                                .append("\"id\":").append(emp.getID())
+                                .append(", \"nombre\":\"").append(emp.getNombre()).append("\"")
+                                .append(", \"cargo\":\"").append(emp.getCargo()).append("\"")
+                                .append("}");
+                        primero = false;
+                    }
+                }
+            }
+            json.append("]");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json.toString());
+            return; // IMPORTANTE: Cortamos la ejecución para no hacer el redirect
+        }
 
         if (idEmpresaSesion != null) {
             // Si hay una empresa logueada, solo ve sus empleados
@@ -82,7 +117,7 @@ public class SvEmpleados extends HttpServlet {
         nuevo.setTelefono(telefono);
         nuevo.setCargo(cargo);
         nuevo.setPassword(password);
-        nuevo.setEstado("ACTIVO"); // Por defecto al registrar
+        nuevo.setEstado("ACTIVO");
         nuevo.setEmpresa_id(empresaId);
 
         int res = dao.registrar(nuevo);
