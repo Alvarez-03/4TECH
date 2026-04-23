@@ -16,7 +16,7 @@
 <body>
     <%@include file="/Components/header.jsp" %>
     <%@include file="Components/modalform.jsp" %>
-    <section class="mx-2 mt-3">
+    <section class="mx-4 mt-3">
         <%@include file="/Components/actionBar.jsp" %>
     </section>
 

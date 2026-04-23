@@ -9,15 +9,13 @@ function abrirModal(button) {
 
     if (!modal) return;
 
-    console.log("Abrir modal tipo:", type);
-
-    if (type === 'FormRegisterWork') {
+    if (tipoModalActual === 'FormRegisterOrd'){
+        console.log("FormRegisterOrd")
+        cargarEmpleadosDinamicos('empleado_id')
+    }
+    if (tipoModalActual === 'FormRegisterWork' || tipoModalActual === 'UpdWork') {
         cargarEmpresasDinamicas('selectEmpresaRegistro');
     }
-    else if (type === 'UpdWork') {
-        cargarEmpresasDinamicas('selectEmpresaActualizar');
-    }
-
     // 1. Ocultar TODAS las secciones del modal primero
     document.querySelectorAll('.modal-section').forEach(section => {
         section.classList.add('hidden');
@@ -94,6 +92,10 @@ function cerrarModal() {
         'UpdWork': {
             title: '¿No actualizar colaborador?',
             text: 'Las modificaciones realizadas al trabajador se perderán.'
+        },
+        'FormRegisterOrd': {
+            title: '¿No quieres agregar la orden?',
+            text: 'al aceptar se perderán todos los campos llenados.'
         },
     };
 
@@ -187,6 +189,7 @@ function enviarFormulario(event) {
 
 // Función para cargar las empresas desde el Servlet
 function cargarEmpresasDinamicas(idDelSelect) {
+    console.log("cargando empleados")
     const select = document.getElementById(idDelSelect);
 
     if (!select) return;
@@ -208,6 +211,56 @@ function cargarEmpresasDinamicas(idDelSelect) {
         .catch(error => {
             console.error('Error:', error);
             select.innerHTML = '<option value="">Error al cargar empresas</option>';
+        });
+}
+
+
+function cargarEmpleadosDinamicos(idDelSelect) {
+    const select = document.getElementById(idDelSelect);
+
+    // Verificamos que el select exista en el DOM para evitar errores
+    if (!select) {
+        console.warn(`No se encontró el elemento con ID: ${idDelSelect}`);
+        return;
+    }
+
+    // Mostramos un mensaje de carga temporal
+    select.innerHTML = '<option value="" disabled selected>Cargando técnicos...</option>';
+
+    // Llamamos al Servlet SvEmpleados usando la nueva acción JSON
+    fetch('SvEmpleados?accion=listarPorEmpresaJSON')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener datos del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            select.innerHTML = '<option value="" disabled selected>Seleccione un técnico...</option>';
+
+            if (data.length === 0) {
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "No hay empleados activos disponibles";
+                option.disabled = true;
+                select.appendChild(option);
+                return;
+            }
+
+            data.forEach(emp => {
+                const option = document.createElement('option');
+                console.log(emp.id)
+                option.value = emp.id;
+                option.textContent = `${emp.nombre} — (${emp.cargo})`;
+                select.appendChild(option);
+            });
+
+            console.log("Empleados cargados exitosamente.");
+        })
+        .catch(error => {
+            console.error('Error en cargarEmpleadosDinamicos:', error);
+            select.innerHTML = '<option value="">Error al cargar la lista</option>';
         });
 }
 

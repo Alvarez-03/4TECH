@@ -1,9 +1,12 @@
+<%@ page import="Logica.Empresa" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <script src="resources/ControlModal.js"></script>
 </head>
 <%
     String permisos = (String) session.getAttribute("PERMISOS");
+    Empresa emp = (Empresa) session.getAttribute("usuarioLogueado");
 %>
 <div id="miModal" class="hidden fixed inset-0 z-50 overflow-auto flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300" aria-labelledby="modal-title" role="dialog"  aria-modal="true">
     <div id="modalContent"  class="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 transition-all transform scale-95 opacity-0">
@@ -237,8 +240,6 @@
                     </div>
                     <%
                     } else {
-                        // Caso Empresa: Se toma el ID de la sesión.
-                        // IMPORTANTE: Asegúrate que en tu Login guardes el atributo "ID_EMPRESA"
                         Object idEmp = session.getAttribute("ID_EMPRESA");
                     %>
                     <input type="hidden" name="empresa_id" value="<%= idEmp != null ? idEmp : "" %>">
@@ -345,5 +346,75 @@
                 </div>
             </form>
         </div>
+
+    <%--        //formulario para registrar orden--%>
+    <div id="container-FormRegisterOrd" class="modal-section hidden">
+        <header class="mb-6 border-b pb-2">
+            <h2 class="text-2xl font-bold text-gray-800">Registrar orden | <span class="text-primary"><%= emp.getNombre() %></span></h2>
+            <p class="text-sm text-gray-500">Completa la información para crear una nueva cuenta.</p>
+        </header>
+
+        <form action="SvOrdenes" method="POST" id="FormRegisterOrd" onsubmit="enviarFormulario(event)">
+            <input type="hidden" name="accion" value="registrar">
+
+            <main class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Empleado Asignado</label>
+                    <select id="empleado_id" name="empleado_id" required
+                            class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm">
+                    </select>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Reporte del Cliente</label>
+                    <textarea id="reporte" name="reporte" required rows="3"
+                              class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
+                              placeholder="Describa el problema reportado por la empresa..."></textarea>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Diagnóstico Inicial</label>
+                    <textarea id="diagnostico" name="diagnostico" rows="3"
+                              class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
+                              placeholder="Análisis técnico del estado del equipo/servicio..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Estado Inicial</label>
+                    <select id="estado_actual" name="estado_actual" required
+                            class="block w-full rounded-md bg-yellow-50 px-3 py-2 text-yellow-700 border border-yellow-200 font-medium focus:ring-2 focus:ring-primary outline-none sm:text-sm">
+                        <option value="PENDIENTE">PENDIENTE</option>
+                        <option value="EN PROCESO">EN PROCESO</option>
+                        <option value="REVISADO">REVISADO</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Observaciones Internas</label>
+                    <input id="observaciones" type="text" name="observaciones"
+                           class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
+                           placeholder="Notas adicionales..." />
+                </div>
+
+            </main>
+
+            <div class="mt-8 flex gap-3">
+                <button
+                        onclick="cerrarModal()"
+                        id="btnCerrarModal"
+                        type="button"
+                        class="flex-1 rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-700 font-medium hover:bg-gray-50 transition sm:text-sm"
+                >
+                    Cancelar orden
+                </button>
+                <button
+                        type="submit"
+                        class="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-800 font-bold transition sm:text-sm shadow-lg shadow-blue-200"
+                >
+                    Registrar orden
+                </button>
+            </div>
+        </form>
+    </div>
     </div>
 </div>
