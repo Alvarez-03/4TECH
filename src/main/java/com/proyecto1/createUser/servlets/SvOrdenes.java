@@ -24,20 +24,17 @@ public class SvOrdenes extends HttpServlet {
 
         HttpSession sesion = request.getSession();
         Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
-        String accion = request.getParameter("accion");
 
-        // Validar sesión
         if (empLogueada == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        // Idea tomada de tu SvEmpleados: Listar por empresa para la tabla del Dashboard
-        if (accion == null || accion.equals("listar")) {
-            List<OrdenServicio> lista = dao.listarPorEmpresa(empLogueada.getID());
-            sesion.setAttribute("listaOrdenes", lista);
-            response.sendRedirect("Dashboard.jsp");
-        }
+        List<OrdenServicio> lista = dao.listarPorEmpresa(empLogueada.getID());
+
+        sesion.setAttribute("listaOrdenes", lista);
+
+        response.sendRedirect("Orders.jsp");
     }
 
     @Override
