@@ -29,7 +29,7 @@
             request.setAttribute("titulo", EMPRESA);
         }
     %>
-    <%@ page import="Logica.Empresa" %>
+    <%@ page import="Logica.modelo.Empresa" %>
     <%@ page import="java.util.List" %>
     <%@include file="/Components/header.jsp" %>
     <div class="max-w-6xl mx-auto my-4">

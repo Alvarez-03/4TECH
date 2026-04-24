@@ -1,4 +1,4 @@
-package Logica;
+package Logica.modelo;
 
 import java.math.BigInteger;
 

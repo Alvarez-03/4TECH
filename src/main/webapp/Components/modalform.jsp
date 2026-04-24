@@ -1,4 +1,4 @@
-<%@ page import="Logica.Empresa" %>
+<%@ page import="Logica.modelo.Empresa" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <link href="https://cdn.tailwindcss.com" rel="stylesheet">

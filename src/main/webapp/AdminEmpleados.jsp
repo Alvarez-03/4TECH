@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="Logica.Empleado" %>
+<%@ page import="Logica.modelo.Empleado" %>
 <%@ page import="java.util.List" %>
 <html>
 <head>

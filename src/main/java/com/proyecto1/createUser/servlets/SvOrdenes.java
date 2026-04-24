@@ -1,8 +1,8 @@
 package com.proyecto1.createUser.servlets;
 
-import Logica.OrdenServicio;
-import Logica.Empresa;
-import Logica.OrdenServicioDAO;
+import Logica.modelo.OrdenServicio;
+import Logica.modelo.Empresa;
+import Logica.DAO.OrdenServicioDAO;
 
 import java.io.IOException;
 import java.util.List;

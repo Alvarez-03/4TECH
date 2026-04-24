@@ -1,8 +1,8 @@
 package com.proyecto1.createUser.servlets;
 
-import Logica.Empleado;
-import Logica.EmpleadoDAO;
-import Logica.Empresa;
+import Logica.modelo.Empleado;
+import Logica.DAO.EmpleadoDAO;
+import Logica.modelo.Empresa;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +30,7 @@ public class SvEmpleados extends HttpServlet {
 
         if ("listarPorEmpresaJSON".equals(accion)) {
             // Obtenemos el objeto de la sesión que guardamos en el login
-            Empresa empLogueada = (Logica.Empresa) sesion.getAttribute("usuarioLogueado");
+            Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
 
             if (empLogueada != null) {
                 System.out.println("ID EMPRESA ENCONTRADO: " + empLogueada.getID());

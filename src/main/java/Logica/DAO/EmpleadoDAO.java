@@ -1,6 +1,8 @@
-package Logica;
+package Logica.DAO;
 
 import Config.Conexion;
+import Logica.modelo.Empleado;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

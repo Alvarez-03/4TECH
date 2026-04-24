@@ -1,4 +1,4 @@
-package Logica;
+package Logica.modelo;
 
 public class Empleado {
     private int ID;

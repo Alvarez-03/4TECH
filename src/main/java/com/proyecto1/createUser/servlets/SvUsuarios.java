@@ -1,7 +1,7 @@
 package com.proyecto1.createUser.servlets;
 
-import Logica.Empresa;
-import Logica.EmpresaDAO;
+import Logica.modelo.Empresa;
+import Logica.DAO.EmpresaDAO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

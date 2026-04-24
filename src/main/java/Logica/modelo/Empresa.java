@@ -1,4 +1,4 @@
-package Logica;
+package Logica.modelo;
 
 public class Empresa {
     private Integer ID;
