@@ -348,70 +348,131 @@
         </div>
 
     <%--        //formulario para registrar orden--%>
-    <div id="container-FormRegisterOrd" class="modal-section hidden">
+        <div id="container-FormRegisterOrd" class="modal-section hidden">
+            <header class="mb-6 border-b pb-2">
+                <h2 class="text-2xl font-bold text-gray-800">Registrar orden | <span class="text-primary"><%= emp.getNombre() %></span></h2>
+                <p class="text-sm text-gray-500">Completa la información para crear una nueva cuenta.</p>
+            </header>
+
+            <form action="SvOrdenes" method="POST" id="FormRegisterOrd" onsubmit="enviarFormulario(event)">
+                <input type="hidden" name="accion" value="registrar">
+
+                <main class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Empleado Asignado</label>
+                        <select id="empleado_id" name="empleado_id" required
+                                class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm">
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Reporte del Cliente</label>
+                        <textarea id="reporte" name="reporte" required rows="3"
+                                  class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
+                                  placeholder="Describa el problema reportado por la empresa..."></textarea>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Diagnóstico Inicial</label>
+                        <textarea id="diagnostico" name="diagnostico" rows="3"
+                                  class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
+                                  placeholder="Análisis técnico del estado del equipo/servicio..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Estado Inicial</label>
+                        <select id="estado_actual" name="estado_actual" required
+                                class="block w-full rounded-md bg-yellow-50 px-3 py-2 text-yellow-700 border border-yellow-200 font-medium focus:ring-2 focus:ring-primary outline-none sm:text-sm">
+                            <option value="PENDIENTE">PENDIENTE</option>
+                            <option value="EN PROCESO">EN PROCESO</option>
+                            <option value="REVISADO">REVISADO</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Observaciones Internas</label>
+                        <input id="observaciones" type="text" name="observaciones"
+                               class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
+                               placeholder="Notas adicionales..." />
+                    </div>
+
+                </main>
+
+                <div class="mt-8 flex gap-3">
+                    <button
+                            onclick="cerrarModal()"
+                            id="btnCerrarModal"
+                            type="button"
+                            class="flex-1 rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-700 font-medium hover:bg-gray-50 transition sm:text-sm"
+                    >
+                        Cancelar orden
+                    </button>
+                    <button
+                            type="submit"
+                            class="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-800 font-bold transition sm:text-sm shadow-lg shadow-blue-200"
+                    >
+                        Registrar orden
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    <%-- // formulario ACTUALIZAR ORDEN --%>
+    <div id="container-UpdOrd" class="modal-section hidden">
         <header class="mb-6 border-b pb-2">
-            <h2 class="text-2xl font-bold text-gray-800">Registrar orden | <span class="text-primary"><%= emp.getNombre() %></span></h2>
-            <p class="text-sm text-gray-500">Completa la información para crear una nueva cuenta.</p>
+            <h2 class="text-2xl font-bold text-gray-800">Actualizar Orden | <span class="text-blue-600" id="edit-orden-id"></span></h2>
+            <p class="text-sm text-gray-500">Modifica los detalles técnicos o el estado de la orden.</p>
         </header>
 
-        <form action="SvOrdenes" method="POST" id="FormRegisterOrd" onsubmit="enviarFormulario(event)">
-            <input type="hidden" name="accion" value="registrar">
+        <form action="SvOrdenes" method="POST" onsubmit="enviarFormulario(event)">
+            <input type="hidden" name="accion" value="actualizar">
+            <input type="hidden" name="ID" id="upd-orden-id-hidden">
 
             <main class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Empleado Asignado</label>
-                    <select id="empleado_id" name="empleado_id" required
+                    <select id="upd-empleado-id" name="empleado_id" required
                             class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm">
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Estado Actual</label>
+                    <select id="upd-estado-actual" name="estado_actual" required
+                            class="block w-full rounded-md bg-white px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm font-bold">
+                        <option value="PENDIENTE">PENDIENTE</option>
+                        <option value="EN PROCESO">EN PROCESO</option>
+                        <option value="REVISADO">REVISADO</option>
+                        <option value="TERMINADO">TERMINADO</option>
                     </select>
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Reporte del Cliente</label>
-                    <textarea id="reporte" name="reporte" required rows="3"
-                              class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
-                              placeholder="Describa el problema reportado por la empresa..."></textarea>
+                    <textarea id="upd-reporte" name="reporte" readonly
+                              class="block w-full rounded-md bg-gray-100 px-3 py-2 text-gray-600 border border-gray-300 sm:text-sm cursor-not-allowed"></textarea>
                 </div>
 
                 <div class="md:col-span-2">
-                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Diagnóstico Inicial</label>
-                    <textarea id="diagnostico" name="diagnostico" rows="3"
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Diagnóstico Técnico</label>
+                    <textarea id="upd-diagnostico" name="diagnostico" rows="3"
                               class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
-                              placeholder="Análisis técnico del estado del equipo/servicio..."></textarea>
+                              placeholder="Escriba el análisis técnico..."></textarea>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Estado Inicial</label>
-                    <select id="estado_actual" name="estado_actual" required
-                            class="block w-full rounded-md bg-yellow-50 px-3 py-2 text-yellow-700 border border-yellow-200 font-medium focus:ring-2 focus:ring-primary outline-none sm:text-sm">
-                        <option value="PENDIENTE">PENDIENTE</option>
-                        <option value="EN PROCESO">EN PROCESO</option>
-                        <option value="REVISADO">REVISADO</option>
-                    </select>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Observaciones</label>
+                    <input id="upd-observaciones" type="text" name="observaciones"
+                           class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm" />
                 </div>
-
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Observaciones Internas</label>
-                    <input id="observaciones" type="text" name="observaciones"
-                           class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm"
-                           placeholder="Notas adicionales..." />
-                </div>
-
             </main>
 
             <div class="mt-8 flex gap-3">
-                <button
-                        onclick="cerrarModal()"
-                        id="btnCerrarModal"
-                        type="button"
-                        class="flex-1 rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-700 font-medium hover:bg-gray-50 transition sm:text-sm"
-                >
-                    Cancelar orden
+                <button onclick="cerrarModal()" type="button" class="flex-1 rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-700 font-medium hover:bg-gray-50 transition">
+                    Cancelar
                 </button>
-                <button
-                        type="submit"
-                        class="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-800 font-bold transition sm:text-sm shadow-lg shadow-blue-200"
-                >
-                    Registrar orden
+                <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-blue-800 font-bold transition shadow-lg">
+                    Actualizar Orden
                 </button>
             </div>
         </form>

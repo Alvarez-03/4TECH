@@ -97,6 +97,10 @@ function cerrarModal() {
             title: '¿No quieres agregar la orden?',
             text: 'al aceptar se perderán todos los campos llenados.'
         },
+        'UpdOrd': {
+            title: '¿Cancelar edición?',
+            text: 'Los cambios realizados en la orden no se guardarán.'
+        },
     };
 
     // Obtenemos el mensaje según el tipo actual o uno por defecto
@@ -136,7 +140,6 @@ function ejecutarCierreEfectivo() {
         modal.classList.add('hidden');
     }, 300);
 }
-
 
 function enviarFormulario(event) {
     event.preventDefault();
@@ -214,7 +217,6 @@ function cargarEmpresasDinamicas(idDelSelect) {
         });
 }
 
-
 function cargarEmpleadosDinamicos(idDelSelect) {
     const select = document.getElementById(idDelSelect);
 
@@ -286,6 +288,37 @@ function abrirModalActualizarTrabajador(button) {
             }
         }, 350);
     }
+}
+
+function abrirModalActualizarOrden(button) {
+    // 1. Abrimos el modal base
+    abrirModal(button);
+
+    // 2. Cargamos los empleados en el select de edición
+    cargarEmpleadosDinamicos('upd-empleado-id');
+
+    // 3. Capturamos los datos del botón
+    const id = button.getAttribute('data-id');
+    const reporte = button.getAttribute('data-reporte');
+    const diagnostico = button.getAttribute('data-diagnostico');
+    const observaciones = button.getAttribute('data-observaciones');
+    const estado = button.getAttribute('data-estado');
+    const empleadoId = button.getAttribute('data-empleado');
+
+    // 4. Llenamos los campos del modal
+    document.getElementById('edit-orden-id').innerText = "#" + id;
+    document.getElementById('upd-orden-id-hidden').value = id;
+    document.getElementById('upd-reporte').value = reporte;
+    document.getElementById('upd-diagnostico').value = (diagnostico === 'null') ? "" : diagnostico;
+    document.getElementById('upd-observaciones').value = (observaciones === 'null') ? "" : observaciones;
+    document.getElementById('upd-estado-actual').value = estado;
+
+    // 5. El select de empleados tarda un poco en cargar por el fetch,
+    // le damos un pequeño tiempo para seleccionar al empleado correcto
+    setTimeout(() => {
+        const selectEmp = document.getElementById('upd-empleado-id');
+        if (selectEmp) selectEmp.value = empleadoId;
+    }, 500);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

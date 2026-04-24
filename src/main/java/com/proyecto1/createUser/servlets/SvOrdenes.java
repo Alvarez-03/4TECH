@@ -46,6 +46,8 @@ public class SvOrdenes extends HttpServlet {
 
         if ("registrar".equals(accion)) {
             registrarOrden(request, response);
+        } else if ("actualizar".equals(accion)) {
+            actualizarOrden(request, response);
         }
     }
 
@@ -75,6 +77,7 @@ public class SvOrdenes extends HttpServlet {
             int res = dao.guardar(nueva);
 
             if (res > 0) {
+                req.getSession().removeAttribute("listaOrdenes");
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write("Orden registrada exitosamente");
             } else {
@@ -82,6 +85,47 @@ public class SvOrdenes extends HttpServlet {
                 resp.getWriter().write("Error al guardar en la base de datos");
             }
         } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("Error: " + e.getMessage());
+        }
+    }
+
+    private void actualizarOrden(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+
+            String idStr = req.getParameter("ID");
+            java.math.BigInteger idOrden = new java.math.BigInteger(idStr);
+
+
+            String reporte = req.getParameter("reporte");
+            String diagnostico = req.getParameter("diagnostico");
+            String observaciones = req.getParameter("observaciones");
+            String estadoActual = req.getParameter("estado_actual");
+            int empleadoId = Integer.parseInt(req.getParameter("empleado_id"));
+
+
+            OrdenServicio ordenEditada = new OrdenServicio();
+            ordenEditada.setIDorden(idOrden);
+            ordenEditada.setReporte(reporte);
+            ordenEditada.setDiagnostico(diagnostico);
+            ordenEditada.setObservaciones(observaciones);
+            ordenEditada.setEstado_actual(estadoActual);
+            ordenEditada.setEmpleado_id(empleadoId);
+
+
+            int res = dao.actualizar(ordenEditada);
+
+            if (res > 0) {
+                req.getSession().removeAttribute("listaOrdenes");
+
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("Orden actualizada correctamente");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("No se pudo actualizar la orden en la BD");
+            }
+        } catch (Exception e) {
+            System.err.println("Error en Servlet Actualizar: " + e.getMessage());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("Error: " + e.getMessage());
         }

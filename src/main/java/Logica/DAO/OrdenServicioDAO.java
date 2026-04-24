@@ -67,4 +67,41 @@ public class OrdenServicioDAO {
         }
         return lista;
     }
+
+    public int actualizar(OrdenServicio orden) {
+        String sql = "UPDATE ordenservicios SET reporte=?, diagnostico=?, estado_actual=?, observaciones=?, empleado_id=? WHERE IDorden=?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, orden.getReporte());
+            ps.setString(2, orden.getDiagnostico());
+            ps.setString(3, orden.getEstado_actual());
+            ps.setString(4, orden.getObservaciones());
+            ps.setInt(5, orden.getEmpleado_id());
+            // Convertimos BigInteger a long para la consulta SQL
+            ps.setLong(6, orden.getIDorden().longValue());
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar Orden: " + e.toString());
+            return 0;
+        } finally {
+            try { if (con != null) con.close(); } catch (SQLException e) { /* ignored */ }
+        }
+    }
+
+    public int eliminar(int idOrden) {
+        String sql = "DELETE FROM ordenservicios WHERE IDorden = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idOrden);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar Orden: " + e.toString());
+            return 0;
+        } finally {
+            try { if (con != null) con.close(); } catch (SQLException e) { /* ignored */ }
+        }
+    }
 }

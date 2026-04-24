@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <script src="resources/ControlModal.js"></script>
+    <script src="resources/ControlOrders.js"></script>
 
     <meta charset="utf-8">
     <title>ORDENES DE SERVICIO</title>
@@ -36,36 +37,57 @@
                     if (listaOrd != null && !listaOrd.isEmpty()) {
                         for (OrdenServicio ord : listaOrd) {
                 %>
-                <div onclick="verDetalleOrden(
-                    '<%= ord.getIDorden() %>',
-                    '<%= ord.getReporte() %>',
-                    '<%= ord.getDiagnostico()%>',
-                    '<%= ord.getObservaciones()%>',
-                    '<%= ord.getEstado_actual() %>',
-                    '<%= ord.getFecha_ingreso() %>',
-                    '<%= ord.getEmpleado_id() %>',
-                    '<%= ord.getEmpresa_id() %>'
-                    )" class="bg-white rounded-2xl p-4 shadow-sm cursor-pointer hover:shadow-md border border-gray-100 relative group">
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all relative">
 
-                    <div class="flex justify-between items-start">
-                        <span class="text-blue-700 font-black text-lg">ORD-<%= String.format("%04d", ord.getIDorden()) %></span>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-blue-700 font-black text-xl italic tracking-tighter">
+                            ORD-<%= String.format("%04d", ord.getIDorden()) %>
+                        </span>
 
-                        <span class="bg-blue-600 text-white text-[10px] px-4 py-1.5 rounded-full font-bold uppercase tracking-wider">
-                    <%= ord.getEstado_actual() %>
-                </span>
+                        <div class="flex items-center gap-2">
+                            <%-- Badge de Estado --%>
+                            <span class="bg-blue-600 text-white text-base italic px-3 py-1 rounded-full font-bold uppercase">
+                                <%= ord.getEstado_actual() %>
+                            </span>
+
+                            <%-- Botón de Editar (Al lado del estado) --%>
+                            <button data-type="UpdOrd"
+                                    data-id="<%= ord.getIDorden() %>"
+                                    data-reporte="<%= ord.getReporte().replace("\"", "&quot;") %>"
+                                    data-diagnostico="<%= ord.getDiagnostico() != null ? ord.getDiagnostico().replace("\"", "&quot;") : "" %>"
+                                    data-observaciones="<%= ord.getObservaciones() != null ? ord.getObservaciones().replace("\"", "&quot;") : "" %>"
+                                    data-estado="<%= ord.getEstado_actual() %>"
+                                    data-empleado="<%= ord.getEmpleado_id() %>"
+                                    onclick="abrirModalActualizarOrden(this)"
+                                    class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
+                                    title="Editar Orden">
+                                <i class="fa-solid fa-pen-to-square text-lg"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="mt-2 pr-8">
-                        <p class="text-gray-500 font-bold text-base truncate">
-                            <%= ord.getReporte() %>
-                        </p>
-                        <p class="text-gray-400 text-xs font-bold mt-1 uppercase tracking-tighter">
-                            FECHA | <%= ord.getFecha_ingreso() %>
-                        </p>
-                    </div>
+                    <div onclick="verDetalleOrden(
+                            '<%= ord.getIDorden() %>',
+                            '<%= ord.getReporte().replace("'", "\\'").replace("\n", " ").replace("\r", " ") %>',
+                            '<%= ord.getDiagnostico() != null ? ord.getDiagnostico().replace("'", "\\'").replace("\n", " ").replace("\r", " ") : "" %>',
+                            '<%= ord.getObservaciones() != null ? ord.getObservaciones().replace("'", "\\'").replace("\n", " ").replace("\r", " ") : "" %>',
+                            '<%= ord.getEstado_actual() %>',
+                            '<%= ord.getFecha_ingreso() %>',
+                            '<%= ord.getEmpleado_id() %>',
+                            '<%= ord.getEmpresa_id() %>'
+                            )" class="cursor-pointer">
 
-                    <div class="absolute right-4 top-1/2 -translate-y-1/2 mt-2">
-                        <i class="fa-solid fa-chevron-right text-black text-xl group-hover:translate-x-1 transition-transform"></i>
+                        <div class="pr-6">
+                            <p class="text-gray-600 font-bold text-sm truncate">
+                                <%= ord.getReporte() %>
+                            </p>
+                            <div class="flex justify-between items-center mt-2">
+                                <p class="text-gray-400 text-[10px] font-black uppercase tracking-tighter">
+                                    <i class="fa-regular fa-calendar-days mr-1"></i><%= ord.getFecha_ingreso() %>
+                                </p>
+                                <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <%
@@ -97,7 +119,9 @@
                     </div>
                     <div class="flex gap-3">
                         <span id="det-badge-estado" class="bg-blue-600 text-white px-6 py-2 rounded-full font-black text-sm uppercase self-center"></span>
-                        <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg font-black text-sm uppercase transition-colors shadow-lg">Factura</button>
+                        <div class="flex bg-gray-800 p-1 rounded-xl border border-gray-700 shadow-inner">
+                            <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg font-black text-sm uppercase transition-colors shadow-lg">Factura</button>
+                        </div>
                     </div>
                 </div>
 
@@ -143,40 +167,6 @@
         </section>
     </main>
 
-    <script>
-        function verDetalleOrden(id, reporte, diagnostico, observaciones, estado, fecha, empleadoID, empresaID) {
-
-            document.getElementById('placeholder-detalle').classList.add('hidden');
-            document.getElementById('contenido-detalle').classList.remove('hidden');
-
-            const formattedId = "APP-" + id.toString().padStart(4, '0');
-            document.getElementById('det-id-title').innerText = formattedId;
-
-            document.getElementById('det-fecha-top').innerText = "FECHA DE INGRESO: " + fecha;
-            document.getElementById('det-reporte-body').innerText = reporte;
-
-            document.getElementById('det-diagnostico-body').innerText =
-                (diagnostico && diagnostico !== 'null' && diagnostico !== '') ? diagnostico : "EL TÉCNICO AÚN NO HA INGRESADO UN DIAGNÓSTICO.";
-
-            document.getElementById('det-obs-body').innerText =
-                (observaciones && observaciones !== 'null' && observaciones !== '') ? observaciones : "Sin observaciones adicionales.";
-
-            document.getElementById('estadoP').innerText = estado;
-
-            document.getElementById('tecnico').innerText = empleadoID;
-
-            const badge = document.getElementById('det-badge-estado');
-            badge.innerText = estado;
-
-            if (estado === 'PENDIENTE') {
-                badge.className = "bg-orange-500 text-white px-6 py-2 rounded-full font-black text-sm uppercase self-center shadow-lg";
-            } else if (estado === 'TERMINADO' || estado === 'ENTREGADO') {
-                badge.className = "bg-green-600 text-white px-6 py-2 rounded-full font-black text-sm uppercase self-center shadow-lg";
-            } else {
-                badge.className = "bg-blue-600 text-white px-6 py-2 rounded-full font-black text-sm uppercase self-center shadow-lg";
-            }
-        }
-    </script>
 
 </body>
 </html>
