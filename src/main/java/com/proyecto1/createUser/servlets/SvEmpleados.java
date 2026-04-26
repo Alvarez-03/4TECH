@@ -35,13 +35,34 @@ public class SvEmpleados extends HttpServlet {
         String accion = request.getParameter("accion");
         if ("listarPorEmpresaJSON".equals(accion)) {
 
-            if (empLogueada != null) {
-                System.out.println("ID EMPRESA ENCONTRADO: " + empLogueada.getID());
-            } else {
+            if (empLogueada == null) {
                 System.out.println("ERROR: La sesión 'usuarioLogueado' está VACÍA.");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
-            sesion.setAttribute("listEmpleados", lista);
-            response.sendRedirect("AdminEmpleados.jsp");
+
+            List<Empleado> listaEmp = dao.listarPorEmpresa(empLogueada.getID());
+
+            StringBuilder json = new StringBuilder("[");
+            boolean primero = true;
+
+            for (Empleado emp : listaEmp) {
+                if ("ACTIVO".equalsIgnoreCase(emp.getEstado())) {
+                    if (!primero) json.append(",");
+                    json.append("{")
+                            .append("\"id\":").append(emp.getID())
+                            .append(", \"nombre\":\"").append(emp.getNombre()).append("\"")
+                            .append(", \"cargo\":\"").append(emp.getCargo()).append("\"")
+                            .append("}");
+                    primero = false;
+                }
+            }
+            json.append("]");
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json.toString());
+
             return;
         }
         
