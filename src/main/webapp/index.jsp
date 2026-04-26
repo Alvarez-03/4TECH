@@ -85,7 +85,7 @@
 
                 Swal.fire({
                     icon: 'error',
-                    title: 'Credenciales incorrectas',
+                    title: 'Upss hubo un error',
                     text: '<%= error %>',
                     confirmButtonColor: '#1d4ed8'
                 });

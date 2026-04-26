@@ -77,6 +77,14 @@ public class SvUsuarios extends HttpServlet {
 
             sesion.setAttribute("usuarioLogueado", empresaLogueada);
 
+            if (!Objects.equals(email, "superadmin@gmail.com") &&
+                    !"ACTIVO".equalsIgnoreCase(empresaLogueada.getEstado())) {
+
+                req.setAttribute("errorLogin", "Tu cuenta está suspendida. Contacta al administrador.");
+                req.getRequestDispatcher("index.jsp").forward(req, resp);
+                return;
+            }
+
             if (Objects.equals(email, "superadmin@gmail.com")) {
                 sesion.setAttribute("PERMISOS", "SUPERADMIN");
                 resp.sendRedirect("DashboardSA.jsp");
