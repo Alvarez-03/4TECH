@@ -52,3 +52,25 @@ function generarFactura(ID) {
     // Esto evita que la página actual se recargue o se cierre
     window.open('SvFacturaPDF?id=' + ID, '_blank');
 }
+
+function filtrarOrdenes() {
+    // 1. Obtener el texto del buscador
+    const input = document.getElementById('inputBusqueda');
+    const filtro = input.value.toLowerCase();
+
+    // 2. Obtener todas las tarjetas de la columna izquierda
+    const tarjetas = document.getElementsByClassName('card-orden');
+
+    // 3. Recorrer y filtrar
+    for (let i = 0; i < tarjetas.length; i++) {
+        const tarjeta = tarjetas[i];
+        const textoTarjeta = tarjeta.innerText.toLowerCase();
+
+        if (textoTarjeta.includes(filtro)) {
+            tarjeta.style.display = ""; // Mostrar
+            tarjeta.style.opacity = "1";
+        } else {
+            tarjeta.style.display = "none"; // Ocultar
+        }
+    }
+}

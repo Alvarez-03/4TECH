@@ -28,9 +28,12 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <i class="fa-solid fa-magnifying-glass w-5 h-5 text-gray-400"></i>
                 </span>
-                <input type="text"
-                       placeholder="Buscar por numero de orden"
-                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm transition-all"
+                <input
+                        type="text"
+                        id="inputBusqueda"
+                        onkeyup="filtrarOrdenes()"
+                        placeholder="Buscar por cliente, estado o número de orden..."
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm shadow-sm"
                 >
             </div>
         </div>

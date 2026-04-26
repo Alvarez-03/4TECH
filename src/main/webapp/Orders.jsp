@@ -37,7 +37,7 @@
                     if (listaOrd != null && !listaOrd.isEmpty()) {
                         for (OrdenServicio ord : listaOrd) {
                 %>
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all relative">
+                <div class="card-orden bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all relative"">
 
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-blue-700 font-black text-xl italic tracking-tighter">
