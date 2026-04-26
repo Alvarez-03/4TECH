@@ -5,6 +5,7 @@ import Logica.DAO.EmpleadoDAO;
 import Logica.modelo.Empresa;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,58 +24,41 @@ public class SvEmpleados extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession sesion = request.getSession();
-        Integer idEmpresaSesion = (Integer) sesion.getAttribute("ID_EMPRESA");
+        // 1. Obtener el usuario logueado (Empresa)
+        Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
+        // 2. Obtener los permisos (Si es SuperAdmin)
+        String permisos = (String) sesion.getAttribute("PERMISOS");
+
+        List<Empleado> lista = null;
+
+        // Lógica para el JSON (Selección en modales)
         String accion = request.getParameter("accion");
-
-        List<Empleado> lista;
-
         if ("listarPorEmpresaJSON".equals(accion)) {
-            // Obtenemos el objeto de la sesión que guardamos en el login
-            Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
 
             if (empLogueada != null) {
                 System.out.println("ID EMPRESA ENCONTRADO: " + empLogueada.getID());
             } else {
                 System.out.println("ERROR: La sesión 'usuarioLogueado' está VACÍA.");
             }
-
-            StringBuilder json = new StringBuilder("[");
-            if (empLogueada != null) {
-                List<Empleado> listaEmp = dao.listarPorEmpresa(empLogueada.getID());
-                boolean primero = true;
-
-                for (Empleado emp : listaEmp) {
-                    if ("ACTIVO".equals(emp.getEstado())) {
-                        if (!primero) json.append(",");
-                        json.append("{")
-                                .append("\"id\":").append(emp.getID())
-                                .append(", \"nombre\":\"").append(emp.getNombre()).append("\"")
-                                .append(", \"cargo\":\"").append(emp.getCargo()).append("\"")
-                                .append("}");
-                        primero = false;
-                    }
-                }
-            }
-            json.append("]");
-
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json.toString());
-            return; // IMPORTANTE: Cortamos la ejecución para no hacer el redirect
+            sesion.setAttribute("listEmpleados", lista);
+            response.sendRedirect("AdminEmpleados.jsp");
+            return;
         }
-
-        if (idEmpresaSesion != null) {
-            // Si hay una empresa logueada, solo ve sus empleados
-            lista = dao.listarPorEmpresa(idEmpresaSesion);
+        
+        
+        if ("SUPERADMIN".equals(permisos)) {
+            lista = dao.listar(); 
+        } else if (empLogueada != null) {
+            lista = dao.listarPorEmpresa(empLogueada.getID());
+            sesion.setAttribute("EMPRESA", empLogueada.getNombre());
         } else {
-            // Si es SuperAdmin o no hay filtro, ve todos
-            lista = dao.listar();
+            lista = new ArrayList<>(); 
         }
 
-        // 2. Guardar lista en sesión y redirigir al JSP
         sesion.setAttribute("listEmpleados", lista);
         response.sendRedirect("AdminEmpleados.jsp");
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -101,66 +85,96 @@ public class SvEmpleados extends HttpServlet {
     }
 
     private void registrarEmpleado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // Capturar datos del formulario
-        int ID = Integer.parseInt(req.getParameter("ID"));
-        String nombre = req.getParameter("nombre");
-        String email = req.getParameter("email");
-        String telefono = req.getParameter("telefono");
-        String cargo = req.getParameter("cargo");
-        String password = req.getParameter("password");
-        int empresaId = Integer.parseInt(req.getParameter("empresa_id"));
-
-        Empleado nuevo = new Empleado();
-        nuevo.setID(ID);
-        nuevo.setNombre(nombre);
-        nuevo.setEmail(email);
-        nuevo.setTelefono(telefono);
-        nuevo.setCargo(cargo);
-        nuevo.setPassword(password);
-        nuevo.setEstado("ACTIVO");
-        nuevo.setEmpresa_id(empresaId);
-
-        int res = dao.registrar(nuevo);
-
-        if (res > 0) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    private void actualizarEmpleado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            // 1. Capturar datos (Igual que el registro)
+            HttpSession sesion = req.getSession();
+            Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
+            String permisos = (String) sesion.getAttribute("PERMISOS");
+
+            int empresaId;
+
+            if ("SUPERADMIN".equals(permisos)) {
+                empresaId = Integer.parseInt(req.getParameter("empresa_id"));
+            } else {
+                empresaId = empLogueada.getID();
+            }
+
             int ID = Integer.parseInt(req.getParameter("ID"));
             String nombre = req.getParameter("nombre");
             String email = req.getParameter("email");
             String telefono = req.getParameter("telefono");
             String cargo = req.getParameter("cargo");
             String password = req.getParameter("password");
-            int empresaId = Integer.parseInt(req.getParameter("empresa_id"));
 
-            // 2. Crear objeto con los datos
+            Empleado nuevo = new Empleado();
+            nuevo.setID(ID);
+            nuevo.setNombre(nombre);
+            nuevo.setEmail(email);
+            nuevo.setTelefono(telefono);
+            nuevo.setCargo(cargo);
+            nuevo.setPassword(password);
+            nuevo.setEstado("ACTIVO");
+            nuevo.setEmpresa_id(empresaId);
+
+            int res = dao.registrar(nuevo);
+
+            if (res > 0) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            System.err.println("Error en registro: " + e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    private void actualizarEmpleado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            HttpSession sesion = req.getSession();
+            Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
+            String permisos = (String) sesion.getAttribute("PERMISOS");
+
+            // 1. Capturar ID del empleado (Obligatorio)
+            String idStr = req.getParameter("ID");
+            if (idStr == null || idStr.isEmpty()) {
+                throw new Exception("ID de empleado no recibido.");
+            }
+            int ID = Integer.parseInt(idStr);
+
+
+            // 3. Capturar el resto de datos
+            String nombre = req.getParameter("nombre");
+            String email = req.getParameter("email");
+            String telefono = req.getParameter("telefono");
+            String cargo = req.getParameter("cargo");
+            String password = req.getParameter("password");
+
+            // 4. Crear objeto y asignar valores
             Empleado empEdit = new Empleado();
             empEdit.setID(ID);
             empEdit.setNombre(nombre);
             empEdit.setEmail(email);
             empEdit.setTelefono(telefono);
             empEdit.setCargo(cargo);
-            empEdit.setPassword(password);
-            empEdit.setEmpresa_id(empresaId);
 
-            // 3. Ejecutar actualización
+            // Manejo de contraseña: Si llega vacía, podrías mantener la anterior
+            // (dependiendo de cómo funcione tu DAO, aquí la seteamos tal cual llega)
+            empEdit.setPassword(password != null ? password : "");
+
+            // 5. Ejecutar actualización
             int res = dao.actualizar(empEdit);
 
             if (res > 0) {
+                // Limpiamos la lista en sesión para que se recargue con los datos nuevos
+                sesion.removeAttribute("listEmpleados");
                 resp.setStatus(HttpServletResponse.SC_OK);
             } else {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
             System.err.println("Error en Servlet Actualizar: " + e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("Error: " + e.getMessage());
         }
     }
 

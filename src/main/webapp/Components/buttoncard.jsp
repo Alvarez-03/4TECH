@@ -32,7 +32,7 @@
                     <i class="fa-solid fa-building-circle-arrow-right text-8xl mb-6"></i>
                     <span class="text-xl text-center">Registrar empresa</span>
                 </button>
-                <a href="SvEmpleados" class="bg-accent p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
+                <a href="SvEmpleados" class="bg-accent text-center p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
                     <i class="fa-solid fa-users-gear text-8xl mb-6"></i>
                     <span class="text-lg">Administrar trabajadores</span>
                 </a>
@@ -49,10 +49,10 @@
                     <i class="fa-solid fa-boxes-stacked text-8xl mb-6"></i>
                     <span class="text-lg">Inventario</span>
                 </button>
-                <button class="bg-secondary p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
+                <a href="SvEmpleados" class="bg-secondary p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
                     <i class="fa-solid fa-users-gear text-8xl mb-6"></i>
                     <span class="text-lg">Recursos Humanos</span>
-                </button>
+                </a>
             <%}%>
         </section>
     </main>

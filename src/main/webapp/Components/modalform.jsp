@@ -311,25 +311,6 @@
                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
 
-                    <%
-                        if ("SUPERADMIN".equals(permisos)) {
-                    %>
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Asignar a empresa</label>
-                        <select id="selectEmpresaActualizar" name="empresa_id" required
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-blue-50/30 focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer">
-                            <option value="" disabled selected>Cargando empresas disponibles...</option>
-                        </select>
-                    </div>
-                    <%
-                    } else {
-                        // Caso Empresa: Se toma el ID de la sesión.
-                        // IMPORTANTE: Asegúrate que en tu Login guardes el atributo "ID_EMPRESA"
-                        Object idEmp = session.getAttribute("ID_EMPRESA");
-                    %>
-                    <input type="hidden" name="empresa_id" value="<%= idEmp != null ? idEmp : "" %>">
-                    <% } %>
-
                 </div>
 
 

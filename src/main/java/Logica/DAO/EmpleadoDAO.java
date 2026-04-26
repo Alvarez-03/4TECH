@@ -39,22 +39,38 @@ public class EmpleadoDAO {
     }
     // Actualizar colaborador
     public int actualizar(Empleado emp) {
-        String sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=?, empresa_id=? WHERE ID=?";
+        boolean cambiaPassword = (emp.getPassword() != null && !emp.getPassword().trim().isEmpty());
+
+        // Si hay password nueva, la incluimos; si no, la sacamos del SQL
+        String sql = "";
+        if (cambiaPassword) sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
+        else sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
+
+        // REVISIÓN: Es mejor manejar dos strings SQL claros
+        String sqlConPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=? WHERE ID=?";
+        String sqlSinPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
+
+        String sqlFinal = cambiaPassword ? sqlConPass : sqlSinPass;
+
         try {
             con = cn.getConnection();
-            ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sqlFinal);
 
             ps.setString(1, emp.getNombre());
             ps.setString(2, emp.getEmail());
             ps.setString(3, emp.getTelefono());
             ps.setString(4, emp.getCargo());
-            ps.setString(5, emp.getPassword());
-            ps.setInt(6, emp.getEmpresa_id());
-            ps.setInt(7, emp.getID()); // El ID del WHERE
+
+            if (cambiaPassword) {
+                ps.setString(5, emp.getPassword());
+                ps.setInt(6, emp.getID());
+            } else {
+                ps.setInt(5, emp.getID());
+            }
 
             return ps.executeUpdate();
         } catch (Exception e) {
-            System.err.println("Error al actualizar empleado en DAO: " + e);
+            System.err.println("Error al actualizar empleado: " + e);
             return 0;
         } finally {
             try { if (ps != null) ps.close(); if (con != null) con.close(); } catch (Exception e) {}
@@ -88,7 +104,7 @@ public class EmpleadoDAO {
         return lista;
     }
 
-    // 3. LISTAR POR EMPRESA (Útil cuando una empresa ve sus propios empleados)
+    // 3. LISTAR POR EMPRESA
     public List<Empleado> listarPorEmpresa(int idEmpresa) {
         List<Empleado> lista = new ArrayList<>();
         String sql = "SELECT * FROM empleado WHERE empresa_id = ?";
@@ -101,13 +117,18 @@ public class EmpleadoDAO {
                 Empleado emp = new Empleado();
                 emp.setID(rs.getInt("ID"));
                 emp.setNombre(rs.getString("nombre"));
+                emp.setEmail(rs.getString("email"));
+                emp.setTelefono(rs.getString("telefono"));
                 emp.setCargo(rs.getString("cargo"));
                 emp.setEstado(rs.getString("estado"));
-                // ... llenar el resto
+                emp.setPassword(rs.getString("password"));
+                emp.setEmpresa_id(rs.getInt("empresa_id"));
                 lista.add(emp);
             }
         } catch (Exception e) {
             System.err.println("Error al filtrar empleados: " + e);
+        } finally {
+            try { if(con != null) con.close(); } catch(Exception e){}
         }
         return lista;
     }
