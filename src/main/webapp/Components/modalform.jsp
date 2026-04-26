@@ -18,7 +18,7 @@
                 <p class="text-sm text-gray-500">Completa la información para crear una nueva cuenta.</p>
             </header>
 
-            <form action="SvUsuarios" method="POST" onsubmit="enviarFormulario(event)" id="formRegistro">
+            <form action="SvEmpresas" method="POST" onsubmit="enviarFormulario(event)" id="formRegistro">
                 <input type="hidden" name="accion" value="registrar">
 
                 <main class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -95,7 +95,7 @@
             <header class="mb-6 border-b pb-2">
                 <h2 class="text-2xl font-bold text-gray-800">Actualiza Empresa</h2>
             </header>
-            <form action="SvUsuarios" method="post" onsubmit="enviarFormulario(event)" id="formUpdEmp">
+            <form action="SvEmpresas" method="post" onsubmit="enviarFormulario(event)" id="formUpdEmp">
                 <input type="hidden" name="accion" value="actualizarEmp">
 
                 <main class="grid grid-cols-1 md:grid-cols-2 gap-4">

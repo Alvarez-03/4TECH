@@ -164,7 +164,7 @@ function enviarFormulario(event) {
                     // --- LÓGICA DE REDIRECCIÓN SELECTIVA ---
 
                     if (tipoModalActual === 'UpdEmp' || tipoModalActual === 'FormRegisterEmp') {
-                        window.location.href = "SvUsuarios";
+                        window.location.href = "SvEmpresas";
                     }
 
                     else if (tipoModalActual === 'FormRegisterWork' || tipoModalActual === 'UpdWork') {
@@ -197,7 +197,7 @@ function cargarEmpresasDinamicas(idDelSelect) {
 
     if (!select) return;
 
-    fetch('SvUsuarios?accion=listarActivas')
+    fetch('SvEmpresas?accion=listarActivas')
         .then(response => {
             if (!response.ok) throw new Error('Error en la red');
             return response.json();

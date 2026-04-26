@@ -43,7 +43,7 @@
                     <a href="SvEmpleados" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-users-gear"></i> Administra trabajadores
                     </a>
-                    <a href="SvUsuarios" data-type="AdminEmp"  class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
+                    <a href="SvEmpresas" data-type="AdminEmp"  class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-building-circle-exclamation"></i> Administrar empresas
                     </a>
                 <%} else{%>

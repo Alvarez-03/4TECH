@@ -36,7 +36,7 @@
                     <i class="fa-solid fa-users-gear text-8xl mb-6"></i>
                     <span class="text-lg">Administrar trabajadores</span>
                 </a>
-                <a href="SvUsuarios" data-type="AdminEmp" class="bg-secondary p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
+                <a href="SvEmpresas" data-type="AdminEmp" class="bg-secondary p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
                     <i class="fa-solid fa-building-circle-exclamation text-8xl mb-6"></i>
                     <span class="text-lg ">Administrar empresas</span>
                 </a>

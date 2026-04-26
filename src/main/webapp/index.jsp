@@ -39,7 +39,7 @@
                     <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Inicio de sesión empresarial</h1>
                 </header>
 
-                <form action="SvUsuarios" method="POST" class="space-y-6" onsubmit="deshabilitarBoton()">
+                <form action="SvEmpresas" method="POST" class="space-y-6" onsubmit="deshabilitarBoton()">
                     <input type="hidden" name="accion" value="login">
 
                     <div class="text-start">

@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/SvUsuarios")
-public class SvUsuarios extends HttpServlet {
+@WebServlet("/SvEmpresas")
+public class SvEmpresas extends HttpServlet {
 
     // El GET lo usaremos para LISTAR las empresas en el Dashboard
     @Override
