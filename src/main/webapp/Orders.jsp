@@ -29,7 +29,7 @@
         <%@include file="/Components/actionBar.jsp" %>
     </section>
 
-    <main class="flex flex-col justify-center gap-5 md:flex-row w-full h-screen mb-3">
+    <main class="flex flex-col justify-center gap-5 md:flex-row w-full min-h-50% mb-3">
         <section class="rounded-xl bg-gray-900 md:w-[30%] p-3 overflow-y-auto h-full">
             <div class="flex flex-col gap-3">
                 <%
@@ -45,12 +45,10 @@
                         </span>
 
                         <div class="flex items-center gap-2">
-                            <%-- Badge de Estado --%>
                             <span class="bg-blue-600 text-white text-base italic px-3 py-1 rounded-full font-bold uppercase">
                                 <%= ord.getEstado_actual() %>
                             </span>
 
-                            <%-- Botón de Editar (Al lado del estado) --%>
                             <button data-type="UpdOrd"
                                     data-id="<%= ord.getIDorden() %>"
                                     data-reporte="<%= ord.getReporte().replace("\"", "&quot;") %>"
@@ -62,6 +60,10 @@
                                     class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
                                     title="Editar Orden">
                                 <i class="fa-solid fa-pen-to-square text-lg"></i>
+                            </button>
+                            <button onclick="generarFactura('<%= ord.getIDorden() %>')"
+                                class="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg font-black text-sm uppercase transition-all active:scale-95 shadow-lg flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf text-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -119,9 +121,6 @@
                     </div>
                     <div class="flex gap-3">
                         <span id="det-badge-estado" class="bg-blue-600 text-white px-6 py-2 rounded-full font-black text-sm uppercase self-center"></span>
-                        <div class="flex bg-gray-800 p-1 rounded-xl border border-gray-700 shadow-inner">
-                            <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg font-black text-sm uppercase transition-colors shadow-lg">Factura</button>
-                        </div>
                     </div>
                 </div>
 

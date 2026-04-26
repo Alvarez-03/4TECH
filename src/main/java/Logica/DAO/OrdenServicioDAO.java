@@ -90,6 +90,28 @@ public class OrdenServicioDAO {
         }
     }
 
+    public OrdenServicio obtenerPorId(int id) {
+        String sql = "SELECT * FROM ordenservicios WHERE IDorden = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                OrdenServicio ord = new OrdenServicio();
+                ord.setIDorden(rs.getBigDecimal("IDorden").toBigInteger());
+                ord.setReporte(rs.getString("reporte"));
+                ord.setDiagnostico(rs.getString("diagnostico"));
+                ord.setEstado_actual(rs.getString("estado_actual"));
+                ord.setFecha_ingreso(rs.getString("fecha_ingreso"));
+                return ord;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener orden: " + e.toString());
+        }
+        return null;
+    }
+
     public int eliminar(int idOrden) {
         String sql = "DELETE FROM ordenservicios WHERE IDorden = ?";
         try {
