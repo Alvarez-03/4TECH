@@ -17,7 +17,7 @@ public class EmpleadoDAO {
 
     // 1. REGISTRAR
     public int registrar(Empleado emp) {
-        String sql = "INSERT INTO empleado (ID,nombre, email, telefono, cargo, estado, password, empresa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO empleado (ID,nombre, email, telefono, cargo, estado, password, empresa_id) VALUES (?, ?, ?, ?, ?, ?, SHA2(?, 256), ?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -41,13 +41,12 @@ public class EmpleadoDAO {
     public int actualizar(Empleado emp) {
         boolean cambiaPassword = (emp.getPassword() != null && !emp.getPassword().trim().isEmpty());
 
-        // Si hay password nueva, la incluimos; si no, la sacamos del SQL
         String sql = "";
         if (cambiaPassword) sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
         else sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
 
         // REVISIÓN: Es mejor manejar dos strings SQL claros
-        String sqlConPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=? WHERE ID=?";
+        String sqlConPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=SHA2(?, 256) WHERE ID=?";
         String sqlSinPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
 
         String sqlFinal = cambiaPassword ? sqlConPass : sqlSinPass;

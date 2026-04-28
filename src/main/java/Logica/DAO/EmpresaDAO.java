@@ -18,7 +18,7 @@ public class EmpresaDAO {
     // 1. REGISTRAR: Insertamos todos los campos de la clase
     public int registrar(Empresa emp) {
         String sql = "INSERT INTO empresa (email, nombre, ciudad, direccion, telefono, siglas, estado, created_at, update_at, password) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SHA2(?, 256))";
 
         try {
             con = cn.getConnection();
@@ -53,8 +53,6 @@ public class EmpresaDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                // Creamos un objeto vacío (puedes usar un constructor vacío si lo creas en la clase Empresa)
-                // O pasarle valores por defecto al constructor largo:
                 Empresa emp = new Empresa(
                         rs.getInt("ID"),
                         rs.getString("email"),
@@ -78,7 +76,7 @@ public class EmpresaDAO {
 
     // 3. VALIDAR ACCESO (Login)
     public Empresa validarAcceso(String email, String pass) {
-        String sql = "SELECT * FROM empresa WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM empresa WHERE email = ? AND password = SHA2(?, 256)";
         Empresa emp = null;
         try {
             con = cn.getConnection();
@@ -107,9 +105,15 @@ public class EmpresaDAO {
     }
 
     public int actualizar(Empresa emp) {
-        // El password solo se cambia si el valor enviado no es NULL
-        String sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, "
-                + "password = IFNULL(?, password), estado=?, update_at=? WHERE email=?";
+        boolean cambiarPassword = (emp.getPassword() != null && !emp.getPassword().trim().isEmpty());
+        String sql;
+        if (cambiarPassword) {
+            // SQL con 9 parámetros
+            sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, estado=?, update_at=?, `password`=SHA2(?, 256) WHERE email=?";
+        } else {
+            // SQL con 8 parámetros (sin password)
+            sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, estado=?, update_at=? WHERE email=?";
+        }
 
         String fechaActual = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 
@@ -122,12 +126,17 @@ public class EmpresaDAO {
             ps.setString(3, emp.getDireccion());
             ps.setInt(4, emp.getTelefono());
             ps.setString(5, emp.getSiglas());
-            ps.setString(6, emp.getPassword());
-            ps.setString(7, emp.getEstado());
-            ps.setString(8, fechaActual);
-            ps.setString(9, emp.getEmail());
+            ps.setString(6, emp.getEstado());
+            ps.setString(7, fechaActual);
 
-
+            if (cambiarPassword) {
+                // Si hay password:
+                ps.setString(8, emp.getPassword());
+                ps.setString(9, emp.getEmail());
+            } else {
+                // Si NO hay password:
+                ps.setString(8, emp.getEmail());
+            }
             return ps.executeUpdate();
         } catch (Exception e) {
             System.err.println("Error en DAO actualizar: " + e);
