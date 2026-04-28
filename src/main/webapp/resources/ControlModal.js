@@ -12,6 +12,7 @@ function abrirModal(button) {
     if (tipoModalActual === 'FormRegisterOrd'){
         console.log("FormRegisterOrd")
         cargarEmpleadosDinamicos('empleado_id')
+        setTimeout(inicializarBuscadorCliente, 100);
     }
     if (tipoModalActual === 'FormRegisterWork' || tipoModalActual === 'UpdWork') {
         cargarEmpresasDinamicas('selectEmpresaRegistro');
@@ -319,6 +320,56 @@ function abrirModalActualizarOrden(button) {
         const selectEmp = document.getElementById('upd-empleado-id');
         if (selectEmp) selectEmp.value = empleadoId;
     }, 500);
+}
+function inicializarBuscadorCliente() {
+    const inputDoc = document.getElementById("documento_cliente");
+    const inputNombre = document.getElementById("nombre_cliente");
+    const inputTel = document.getElementById("telefono_cliente");
+    const inputEmail = document.getElementById("email_cliente");
+    const statusMsg = document.getElementById("cliente_status");
+
+    // Si no existen los campos (porque estamos en otro modal), salimos
+    if (!inputDoc) return;
+
+    inputDoc.addEventListener("blur", function() {
+        let doc = this.value.trim();
+        if (doc.length < 3) return;
+
+        statusMsg.innerHTML = '<span class="text-blue-500 animate-pulse">Buscando cliente...</span>';
+
+        fetch(`SvClientes?documento=${doc}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.documento) {
+                    inputNombre.value = data.nombre;
+                    inputTel.value = data.telefono;
+                    inputEmail.value = data.email;
+
+                    // Aplicar estilos de bloqueado
+                    [inputNombre, inputTel, inputEmail].forEach(el => {
+                        el.readOnly = true;
+                        el.classList.add('bg-gray-100', 'cursor-not-allowed', 'border-gray-200');
+                        el.classList.remove('bg-white', 'border-blue-300');
+                    });
+
+                    statusMsg.innerHTML = '<span class="flex items-center text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Cliente vinculado</span>';
+                } else {
+                    // ESTADO: CLIENTE NUEVO
+                    [inputNombre, inputTel, inputEmail].forEach(el => {
+                        el.value = "";
+                        el.readOnly = false;
+                        el.classList.remove('bg-gray-100', 'cursor-not-allowed', 'border-gray-200');
+                        el.classList.add('bg-white', 'border-blue-300', 'focus:ring-2');
+                    });
+
+                    statusMsg.innerHTML = '<span class="flex items-center text-amber-500 font-medium"><i class="fas fa-info-circle mr-1"></i> Cliente nuevo: complete los datos</span>';
+                }
+            })
+            .catch(err => {
+                console.error("Error buscando cliente:", err);
+                statusMsg.innerHTML = '<span class="text-red-500 text-sm">Error de conexión.</span>';
+            });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", function() {

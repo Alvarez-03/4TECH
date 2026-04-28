@@ -1,5 +1,7 @@
 package com.proyecto1.createUser.servlets;
 
+import Logica.DAO.ClienteDAO;
+import Logica.modelo.Cliente;
 import Logica.modelo.OrdenServicio;
 import Logica.modelo.Empresa;
 import Logica.DAO.OrdenServicioDAO;
@@ -52,6 +54,25 @@ public class SvOrdenes extends HttpServlet {
     }
 
     private void registrarOrden(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String docCliente = req.getParameter("documento");
+        String nombreCliente = req.getParameter("nombre_cliente");
+        String telCliente = req.getParameter("telefono_cliente");
+        String emailCliente = req.getParameter("email_cliente");
+
+        ClienteDAO cDao = new ClienteDAO();
+        Cliente existente = cDao.buscar(docCliente);
+
+        if (existente == null) {
+            Cliente nuevo = new Cliente();
+            nuevo.setDocumento(docCliente);
+            nuevo.setNombre(nombreCliente);
+            nuevo.setTelefono(telCliente);
+            nuevo.setEmail(emailCliente);
+            nuevo.setEstado("ACTIVO");
+
+            cDao.registrar(nuevo);
+            System.out.println("Cliente nuevo registrado: " + docCliente);
+        }
         HttpSession sesion = req.getSession();
         Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
         System.out.println(empLogueada.getID());
@@ -73,6 +94,7 @@ public class SvOrdenes extends HttpServlet {
             nueva.setEstado_actual(estadoActual);
             nueva.setEmpleado_id((int) empleado_id);
             nueva.setEmpresa_id(empLogueada.getID());
+            nueva.setCliente_id(docCliente);
 
             int res = dao.guardar(nueva);
 

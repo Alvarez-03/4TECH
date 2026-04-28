@@ -18,7 +18,7 @@ public class OrdenServicioDAO {
     ResultSet rs;
 
     public int guardar(OrdenServicio orden) {
-        String sql = "INSERT INTO ordenservicios (reporte, diagnostico, estado_actual, observaciones, fecha_ingreso, empresa_id, empleado_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ordenservicios (reporte, diagnostico, estado_actual, observaciones, fecha_ingreso, empresa_id, empleado_id, cliente_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             String fechaActual = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 
@@ -31,6 +31,7 @@ public class OrdenServicioDAO {
             ps.setString(5, fechaActual);
             ps.setInt(6, orden.getEmpresa_id());
             ps.setInt(7, orden.getEmpleado_id());
+            ps.setString(8, orden.getCliente_id());
 
             return ps.executeUpdate();
         } catch (SQLException e) {
@@ -60,6 +61,7 @@ public class OrdenServicioDAO {
                 ord.setFecha_ingreso(rs.getString("fecha_ingreso"));
                 ord.setEmpresa_id(rs.getInt("empresa_id"));
                 ord.setEmpleado_id(rs.getInt("empleado_id"));
+                ord.setCliente_id(rs.getString("cliente_id"));
                 lista.add(ord);
             }
         } catch (SQLException e) {
@@ -104,6 +106,7 @@ public class OrdenServicioDAO {
                 ord.setDiagnostico(rs.getString("diagnostico"));
                 ord.setEstado_actual(rs.getString("estado_actual"));
                 ord.setFecha_ingreso(rs.getString("fecha_ingreso"));
+                ord.setCliente_id(rs.getString("Cliente_id"));
                 return ord;
             }
         } catch (SQLException e) {

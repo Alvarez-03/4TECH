@@ -64,6 +64,8 @@ public class SvFacturaPDF extends HttpServlet {
 
                 // Datos generales
                 "<div class='info-grid'>" +
+                "<div class='info-item'><strong>IDENTIFICACIÓN CLIENTE:</strong></div>" +
+                "<div style='font-size: 16px; font-weight: bold; color: #1d4ed8;'>" + ord.getCliente_id() + "</div>" +
                 "  <div class='info-item'><strong>Fecha de Emisión:</strong> " + ord.getFecha_ingreso() + "</div>" +
                 "  <div class='info-item'><strong>Estado de la Orden:</strong> " + ord.getEstado_actual() + "</div>" +
                 "</div>" +

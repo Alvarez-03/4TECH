@@ -339,7 +339,73 @@
                 <input type="hidden" name="accion" value="registrar">
 
                 <main class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div class="md:col-span-2">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 p-2 rounded-lg text-white mr-3">
+                                <i class="fas fa-user-tag"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800">Información del Cliente</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-sm font-semibold text-gray-600 ml-1">Documento / NIT</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-3 text-gray-400">
+                                        <i class="fas fa-id-card"></i>
+                                    </span>
+                                    <input type="text" id="documento_cliente" name="documento" required
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                                           placeholder="Ej: 1090... o 900...">
+                                </div>
+                                <div id="cliente_status" class="min-h-[20px] text-xs mt-1 ml-1">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-sm font-semibold text-gray-600 ml-1">Nombre o Razón Social</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-3 text-gray-400">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" id="nombre_cliente" name="nombre_cliente" required readonly
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed outline-none transition-all"
+                                           placeholder="Se cargará automáticamente">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-sm font-semibold text-gray-600 ml-1">Teléfono / WhatsApp</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-3 text-gray-400">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </span>
+                                    <input type="text" id="telefono_cliente" name="telefono_cliente" readonly
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed outline-none"
+                                           placeholder="Contacto">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-sm font-semibold text-gray-600 ml-1">Correo Electrónico</label>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-3 text-gray-400">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" id="email_cliente" name="email_cliente" readonly
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed outline-none"
+                                           placeholder="email@ejemplo.com">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-600 p-2 rounded-lg text-white mr-3">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Información de la orden</h3>
+                    </div>
+                    <div class="md:col-span-2">
                         <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Empleado Asignado</label>
                         <select id="empleado_id" name="empleado_id" required
                                 class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm">

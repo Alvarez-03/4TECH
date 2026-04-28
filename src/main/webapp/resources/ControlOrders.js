@@ -1,5 +1,5 @@
 
-function verDetalleOrden(id, reporte, diagnostico, observaciones, estado, fecha, empleadoID, empresaID) {
+function verDetalleOrden(id, reporte, diagnostico, observaciones, estado, fecha, empleadoID, empresaID, clienteID) {
 
     document.getElementById('placeholder-detalle').classList.add('hidden');
     document.getElementById('contenido-detalle').classList.remove('hidden');
@@ -19,6 +19,8 @@ function verDetalleOrden(id, reporte, diagnostico, observaciones, estado, fecha,
     document.getElementById('estadoP').innerText = estado;
 
     document.getElementById('tecnico').innerText = empleadoID;
+
+    document.getElementById('idCliente').innerText = clienteID;
 
     const badge = document.getElementById('det-badge-estado');
     badge.innerText = estado;

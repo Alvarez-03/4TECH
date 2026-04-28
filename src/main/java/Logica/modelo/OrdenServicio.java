@@ -11,6 +11,7 @@ public class OrdenServicio {
     private String fecha_ingreso;
     private int empresa_id; // Llave foránea
     private int empleado_id;  // Llave foránea
+    private String cliente_id; // Llave foranea
 
     public OrdenServicio() {
     }
@@ -78,4 +79,8 @@ public class OrdenServicio {
     public void setEmpleado_id(int empleado_id) {
         this.empleado_id = empleado_id;
     }
+
+    public String getCliente_id() { return cliente_id; }
+
+    public void setCliente_id(String cliente_doc) { this.cliente_id = cliente_doc; }
 }

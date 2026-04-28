@@ -30,7 +30,7 @@
     </section>
 
     <main class="flex flex-col justify-center gap-5 md:flex-row w-full min-h-50% mb-3">
-        <section class="rounded-xl bg-gray-900 md:w-[30%] p-3 overflow-y-auto h-full">
+        <section class="rounded-xl bg-gray-900 md:w-[30%] p-3 overflow-y-auto h-[90vh] custom-scroll">
             <div class="flex flex-col gap-3">
                 <%
                     List<OrdenServicio> listaOrd = (List<OrdenServicio>) session.getAttribute("listaOrdenes");
@@ -56,6 +56,7 @@
                                     data-observaciones="<%= ord.getObservaciones() != null ? ord.getObservaciones().replace("\"", "&quot;") : "" %>"
                                     data-estado="<%= ord.getEstado_actual() %>"
                                     data-empleado="<%= ord.getEmpleado_id() %>"
+                                    data-cliente="<%= ord.getCliente_id() %>"
                                     onclick="abrirModalActualizarOrden(this)"
                                     class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
                                     title="Editar Orden">
@@ -76,12 +77,16 @@
                             '<%= ord.getEstado_actual() %>',
                             '<%= ord.getFecha_ingreso() %>',
                             '<%= ord.getEmpleado_id() %>',
-                            '<%= ord.getEmpresa_id() %>'
+                            '<%= ord.getEmpresa_id() %>',
+                            '<%= ord.getCliente_id() %>',
                             )" class="cursor-pointer">
 
                         <div class="pr-6">
                             <p class="text-gray-600 font-bold text-sm truncate">
-                                <%= ord.getReporte() %>
+                                <strong>Cliente:</strong> <%= ord.getCliente_id() %>
+                            </p>
+                            <p class="text-gray-600 font-bold text-sm truncate">
+                                <strong>Reporte:</strong> <%= ord.getReporte() %>
                             </p>
                             <div class="flex justify-between items-center mt-2">
                                 <p class="text-gray-400 text-[10px] font-black uppercase tracking-tighter">
@@ -142,6 +147,13 @@
 
                     <div class="flex flex-col gap-4">
                         <div class="flex flex-col gap-1">
+                            <label class="text-white font-black text-sm uppercase italic">No. identificación del cliente:</label>
+                            <div class="w-full bg-white text-gray-800 font-bold p-2 rounded border-l-4 border-blue-500 focus:outline-none">
+                                <p id="idCliente" class="text-gray-800 font-black text-sm uppercase italic"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
                             <label class="text-white font-black text-sm uppercase italic">Tecnico asignado:</label>
                             <div class="w-full bg-white text-gray-800 font-bold p-2 rounded border-l-4 border-blue-500 focus:outline-none">
                                 <p id="tecnico" class="text-gray-800 font-black text-sm uppercase italic"></p>
@@ -155,6 +167,9 @@
                             </div>
                         </div>
 
+                    </div>
+
+                    <div class="md:col-span-2">
                         <div class="bg-white rounded-xl p-3 min-h-[80px] shadow-inner mt-2">
                             <h4 class="text-blue-700 font-black text-lg uppercase mb-1 tracking-tighter">Observaciones</h4>
                             <p id="det-obs-body" class="text-gray-600 font-bold text-xs"></p>
