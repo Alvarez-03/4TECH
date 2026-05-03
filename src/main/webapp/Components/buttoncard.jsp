@@ -40,7 +40,7 @@
                     <i class="fa-solid fa-building-circle-exclamation text-8xl mb-6"></i>
                     <span class="text-lg ">Administrar empresas</span>
                 </a>
-            <% } else { %>
+            <% } if (PERMISOS.equals("EMPRESA")){ %>
                 <a href="Orders.jsp" class="bg-primary p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
                     <i class="fa-solid fa-receipt text-8xl mb-6"></i>
                     <span class="text-lg">Ordenes</span>
@@ -53,6 +53,15 @@
                     <i class="fa-solid fa-users-gear text-8xl mb-6"></i>
                     <span class="text-lg">Recursos Humanos</span>
                 </a>
+            <%} else {%>
+                <a href="Orders.jsp" class="bg-primary p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
+                    <i class="fa-solid fa-receipt text-8xl mb-6"></i>
+                    <span class="text-lg">Ordenes</span>
+                </a>
+                <button class="bg-accent p-5 flex flex-col m-auto h-64 w-64 items-center justify-center aspect-square text-black font-bold rounded-3xl shadow-lg hover:scale-105 transition-transform p-6">
+                    <i class="fa-solid fa-boxes-stacked text-8xl mb-6"></i>
+                    <span class="text-lg">Inventario</span>
+                </button>
             <%}%>
         </section>
     </main>

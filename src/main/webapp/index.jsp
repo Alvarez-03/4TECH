@@ -66,6 +66,13 @@
                         </button>
                     </div>
                 </form>
+                <div class="mt-6 text-center border-t pt-4">
+                    <p class="text-xs text-gray-500 mb-2">¿Eres parte del equipo técnico?</p>
+                    <a href="loginEmpleados.jsp"
+                       class="inline-block w-full rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary hover:bg-blue-50 transition-colors">
+                        Acceso para Empleados
+                    </a>
+                </div>
             </div>
 
             <div class="hidden md:block w-full h-full">

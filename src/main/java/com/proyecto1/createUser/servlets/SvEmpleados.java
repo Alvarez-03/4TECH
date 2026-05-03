@@ -98,13 +98,42 @@ public class SvEmpleados extends HttpServlet {
                 case "actualizar":
                     actualizarEmpleado(request, response);
                     break;
+                case "loginEmpleado":
+                    procesarLoginEmpleado(request, response);
+                    break;
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     break;
             }
         }
     }
+    private void procesarLoginEmpleado(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
 
+        EmpleadoDAO dao = new EmpleadoDAO();
+        Empleado empleadoLogueado = dao.validar(email, password);
+
+        if (empleadoLogueado != null) {
+            HttpSession sesion = req.getSession();
+
+            sesion.setAttribute("usuarioLogueado", empleadoLogueado);
+
+            if (!"ACTIVO".equalsIgnoreCase(empleadoLogueado.getEstado())) {
+                req.setAttribute("errorLogin", "Tu usuario técnico está desactivado. Contacta a tu empresa.");
+                req.getRequestDispatcher("index.jsp").forward(req, resp);
+                return;
+            }
+
+            sesion.setAttribute("PERMISOS", "EMPLEADO");
+            resp.sendRedirect("DashboardSA.jsp");
+
+        } else {
+            // Si fallan las credenciales
+            req.setAttribute("errorLogin", "Correo o contraseña de técnico incorrectos.");
+            req.getRequestDispatcher("loginEmpleados.jsp").forward(req, resp);
+        }
+    }
     private void registrarEmpleado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             HttpSession sesion = req.getSession();

@@ -149,4 +149,33 @@ public class EmpleadoDAO {
             try { if (con != null) con.close(); } catch (Exception e) {}
         }
     }
+    //5. VALIDAR DATOS PARA INICIO DE SESION
+    public Empleado validar(String email, String password) {
+        Empleado emp = null;
+        // Comparamos el password usando SHA2 para que coincida con el registro
+        String sql = "SELECT * FROM empleado WHERE email = ? AND password = SHA2(?, 256) AND estado = 'ACTIVO'";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                emp = new Empleado();
+                emp.setID(rs.getInt("ID"));
+                emp.setNombre(rs.getString("nombre"));
+                emp.setEmail(rs.getString("email"));
+                emp.setCargo(rs.getString("cargo"));
+                emp.setEmpresa_id(rs.getInt("empresa_id"));
+                emp.setEstado(rs.getString("estado"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error en login empleado: " + e);
+        } finally {
+            try { if (con != null) con.close(); } catch (Exception e) {}
+        }
+        return emp;
+    }
 }
