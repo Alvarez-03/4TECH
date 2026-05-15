@@ -145,11 +145,17 @@ public class EmpresaDAO {
     }
 
     public Empresa buscarPorId(int id) {
-        String sql = "SELECT * FROM empresas WHERE ID = ?";
+        String sql = "SELECT * FROM empresa WHERE ID = ?";
         Empresa emp = null;
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
+
+            // 1. PRIMERO: Pasar el ID al signo de interrogación (?)
+            ps.setInt(1, id);
+
+            // 2. SEGUNDO: EJECUTAR la consulta (esto es lo que faltaba)
+            rs = ps.executeQuery();
 
             if (rs.next()) {
                 emp = new Empresa();

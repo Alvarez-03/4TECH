@@ -126,9 +126,16 @@ public class SvEmpleados extends HttpServlet {
                 return;
             }
 
-            //validar empresa este activa
+            // Obtienes el ID que viene como String en el objeto empleadoLogueado
+            int idEmpresaStr = empleadoLogueado.getEmpresa_id();
+            System.out.println(idEmpresaStr);
+
+
+            // Buscas la empresa con el ID ya convertido
             EmpresaDAO empresaDao = new EmpresaDAO();
-            Empresa empresaAsociada = empresaDao.buscarPorId(empleadoLogueado.getEmpresa_id());
+            Empresa empresaAsociada = empresaDao.buscarPorId(idEmpresaStr);
+
+            System.out.println(empresaAsociada);
 
             if (empresaAsociada == null || !"ACTIVO".equals(empresaAsociada.getEstado())) {
                 req.setAttribute("errorLogin", "El acceso está restringido porque la empresa asociada no se encuentra activa.");
