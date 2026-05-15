@@ -23,7 +23,7 @@
 
                 <div class="md:col-span-2">
                     <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Numero de identificacion</label>
-                    <input type="number" name="ID" required placeholder="Ej. 1164845946"
+                    <input type="number" name="ID" required placeholder="Ej. 1164845946" min="1" max="9999999999"
                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                 </div>
 

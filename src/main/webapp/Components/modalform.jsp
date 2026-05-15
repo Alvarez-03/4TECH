@@ -17,7 +17,8 @@
 
             <%--    //formulario para registrar y actualizar orden--%>
             <% if (permisos.equals("EMPRESA") || permisos.equals("EMPLEADO")){%>
-                <%@include file="/Components/FormModals/FormOrders.jsp" %>
+                <%@include file="FormModals/FormOrders.jsp" %>
+                <%@include file="FormModals/FormInventario.jsp"%>
             <%}%>
         </div>
     </div>

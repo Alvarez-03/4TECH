@@ -102,6 +102,14 @@ function cerrarModal() {
             title: '¿Cancelar edición?',
             text: 'Los cambios realizados en la orden no se guardarán.'
         },
+        'FormInventario': {
+            title: '¿Cancelar registro?',
+            text: 'Los datos del producto no se guardarán.'
+        },
+        'UpdInventario': {
+            title: '¿Cancelar edición?',
+            text: 'Los cambios en el producto se perderán.'
+        }
     };
 
     // Obtenemos el mensaje según el tipo actual o uno por defecto
@@ -370,6 +378,40 @@ function inicializarBuscadorCliente() {
                 statusMsg.innerHTML = '<span class="text-red-500 text-sm">Error de conexión.</span>';
             });
     });
+}
+
+function abrirModalActualizarInventario(button) {
+    // 1. Abrir el modal base
+    abrirModal(button);
+
+    // 2. Capturar datos del botón
+    const id = button.getAttribute('data-id');
+    const nombre = button.getAttribute('data-nombre');
+    const cantidad = button.getAttribute('data-cantidad');
+    const costo = button.getAttribute('data-costo');
+
+    // 3. Llenar el formulario (usando IDs específicos de FormInventario.jsp)
+    const container = document.getElementById('container-FormInventario');
+    if (container) {
+        document.getElementById('inv-accion').value = "actualizar";
+        document.getElementById('inv-id').value = id;
+        document.getElementById('inv-nombre').value = nombre;
+        document.getElementById('inv-cantidad').value = cantidad;
+        document.getElementById('inv-costo').value = costo;
+
+        document.getElementById('modalInventarioTitulo').innerText = "Actualizar Producto";
+    }
+}
+
+// Función simple para resetear el modal al registrar nuevo
+function abrirModalRegistroInventario(button) {
+    abrirModal(button);
+    const form = document.getElementById('FormInventario');
+    if (form) {
+        form.reset();
+        document.getElementById('inv-accion').value = "registrar";
+        document.getElementById('modalInventarioTitulo').innerText = "Registrar Producto";
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {

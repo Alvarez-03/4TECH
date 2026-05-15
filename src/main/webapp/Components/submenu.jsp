@@ -50,7 +50,7 @@
                     <a href="Orders.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-receipt"></i>Ordenes
                     </a>
-                    <a href="DashboardSA.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
+                    <a href="SvInventario" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-boxes-stacked"></i> Inventario
                     </a>
                     <a href="SvEmpleados" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
@@ -60,7 +60,7 @@
                     <a href="Orders.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-receipt"></i>Ordenes
                     </a>
-                    <a href="DashboardSA.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
+                    <a href="SvInventario" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-boxes-stacked"></i> Inventario
                     </a>
                 <%}%>
