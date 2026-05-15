@@ -135,13 +135,25 @@
             <input type="hidden" name="ID" id="upd-orden-id-hidden">
 
             <main class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Empleado Asignado</label>
-                    <select id="upd-empleado-id" name="empleado_id" required
-                            class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm">
-                    </select>
-                </div>
-
+                <%
+                    if(permisos.equals("EMPRESA") ){
+                    Empresa emp = (Empresa)session.getAttribute("usuarioLogueado");
+                %>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Empleado Asignado</label>
+                        <select id="upd-empleado-id" name="empleado_id" required
+                                class="block w-full rounded-md bg-gray-50 px-3 py-2 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-primary outline-none sm:text-sm">
+                        </select>
+                    </div>
+                <%} else{
+                    Logica.modelo.Empleado tecnico = (Logica.modelo.Empleado) session.getAttribute("usuarioLogueado");
+                %>
+                    <input type="hidden" name="empleado_id" value="<%= tecnico.getID() %>">
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Técnico Responsable</label>
+                        <p class="text-sm font-bold text-blue-600 p-2 bg-blue-50 rounded"><%= tecnico.getNombre() %></p>
+                    </div>
+                <%}%>
                 <div>
                     <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Estado Actual</label>
                     <select id="upd-estado-actual" name="estado_actual" required
@@ -182,7 +194,6 @@
                 </button>
             </div>
         </form>
-    </div>
     </div>
 </body>
 </html>
