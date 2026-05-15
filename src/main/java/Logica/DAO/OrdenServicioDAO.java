@@ -70,6 +70,33 @@ public class OrdenServicioDAO {
         return lista;
     }
 
+    public List<OrdenServicio> listarPorEmpleado(int idEmpleado) {
+        List<OrdenServicio> lista = new ArrayList<>();
+        String sql = "SELECT * FROM ordenservicios WHERE empleado_id = ? ORDER BY fecha_ingreso DESC";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idEmpleado);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                OrdenServicio ord = new OrdenServicio();
+                ord.setIDorden(rs.getBigDecimal("IDorden").toBigInteger());
+                ord.setReporte(rs.getString("reporte"));
+                ord.setDiagnostico(rs.getString("diagnostico"));
+                ord.setEstado_actual(rs.getString("estado_actual"));
+                ord.setObservaciones(rs.getString("observaciones"));
+                ord.setFecha_ingreso(rs.getString("fecha_ingreso"));
+                ord.setEmpresa_id(rs.getInt("empresa_id"));
+                ord.setEmpleado_id(rs.getInt("empleado_id"));
+                ord.setCliente_id(rs.getString("cliente_id"));
+                lista.add(ord);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar Ordenes por Empleado: " + e.toString());
+        }
+        return lista;
+    }
+
     public int actualizar(OrdenServicio orden) {
         String sql = "UPDATE ordenservicios SET reporte=?, diagnostico=?, estado_actual=?, observaciones=?, empleado_id=? WHERE IDorden=?";
         try {

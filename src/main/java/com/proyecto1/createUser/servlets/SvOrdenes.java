@@ -25,17 +25,28 @@ public class SvOrdenes extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession sesion = request.getSession();
-        Empresa empLogueada = (Empresa) sesion.getAttribute("usuarioLogueado");
+        String permisos = (String) sesion.getAttribute("PERMISOS");
+        Object usuario = sesion.getAttribute("usuarioLogueado");
 
-        if (empLogueada == null) {
-            response.sendRedirect("login.jsp");
+        if (usuario == null || permisos == null) {
+            response.sendRedirect("index.jsp");
             return;
         }
 
-        List<OrdenServicio> lista = dao.listarPorEmpresa(empLogueada.getID());
+        List<OrdenServicio> lista = null;
+
+        // Lógica polimórfica según el rol
+        if ("EMPRESA".equals(permisos)) {
+            Logica.modelo.Empresa emp = (Logica.modelo.Empresa) usuario;
+            lista = dao.listarPorEmpresa(emp.getID());
+        }
+        else if ("EMPLEADO".equals(permisos)) {
+            Logica.modelo.Empleado mple = (Logica.modelo.Empleado) usuario;
+            // Importante: asegúrate que en tu modelo Empleado el ID sea accesible
+            lista = dao.listarPorEmpleado((int) mple.getID());
+        }
 
         sesion.setAttribute("listaOrdenes", lista);
-
         response.sendRedirect("Orders.jsp");
     }
 

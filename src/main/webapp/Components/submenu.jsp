@@ -46,7 +46,7 @@
                     <a href="SvEmpresas" data-type="AdminEmp"  class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-building-circle-exclamation"></i> Administrar empresas
                     </a>
-                <%} if (PERMISOS_SUBMENU.equals("EMPRESA")){%>
+                <%} else if (PERMISOS_SUBMENU.equals("EMPRESA")){%>
                     <a href="Orders.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-receipt"></i>Ordenes
                     </a>
@@ -56,7 +56,7 @@
                     <a href="SvEmpleados" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-users-gear"></i> Recursos humanos
                     </a>
-                <%} else {%>
+                <%} else if (PERMISOS_SUBMENU.equals("EMPLEADO")){%>
                     <a href="Orders.jsp" class="flex items-center gap-3 p-3 text-gray-ebony hover:bg-gray-100 rounded-lg transition-colors font-medium">
                         <i class="fa-solid fa-receipt"></i>Ordenes
                     </a>
