@@ -61,14 +61,28 @@
 <%@include file="Components/header.jsp"%>
 
 <div class="max-w-7xl mx-auto my-8 px-4">
-
-    <%-- HEADER DE LA PÁGINA --%>
+    
     <div class="flex justify-between items-center mb-8">
-        <div>
+        <div class="j">
             <h1 class="text-3xl font-extrabold text-gray-800">Panel de Empleados</h1>
             <% if (PERMISOS_emp.equals("SUPERADMIN")) { %>
             <p class="text-gray-500 mt-1 italic">Visualizando personal de: <strong><%= EMPRESA_NOM %></strong></p>
             <% } %>
+        </div>
+
+        <div class="flex flex-1 w-full max-w-2xl gap-3">
+            <div class="relative flex-1">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fa-solid fa-magnifying-glass w-5 h-5 text-gray-400"></i>
+                </span>
+                <input
+                        type="text"
+                        id="inputBusqueda"
+                        onkeyup="filtrarEmpleados()"
+                        placeholder="Buscar por nombre, rol, correo o teléfono..."
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm shadow-sm"
+                >
+            </div>
         </div>
 
         <button
@@ -76,7 +90,7 @@
                 data-type="FormRegisterWork"
                 data-empresa-id="<%= idEmpresaParaRegistro %>"
                 class="bg-secondary hover:bg-secondary/80 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition-all flex items-center gap-2 active:scale-95">
-            <i class="fa-solid fa-user-plus"></i> Registrar Trabajador
+            <i class="fa-solid fa-user-plus"></i> Registrar Empleado
         </button>
     </div>
 
@@ -87,13 +101,13 @@
             <tr>
                 <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Nombre del Empleado</th>
                 <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Cargo / Rol</th>
-                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Email</th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Correo</th>
                 <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Teléfono</th>
                 <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Estado</th>
                 <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider">Acciones</th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100" id="tablaEmpleados">
             <%
                 List<Empleado> lista = (List<Empleado>) session.getAttribute("listEmpleados");
                 if (lista != null && !lista.isEmpty()) {
