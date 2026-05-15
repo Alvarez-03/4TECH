@@ -1,5 +1,6 @@
 package com.proyecto1.createUser.servlets;
 
+import Logica.DAO.EmpresaDAO;
 import Logica.modelo.Empleado;
 import Logica.DAO.EmpleadoDAO;
 import Logica.modelo.Empresa;
@@ -121,7 +122,17 @@ public class SvEmpleados extends HttpServlet {
 
             if (!"ACTIVO".equalsIgnoreCase(empleadoLogueado.getEstado())) {
                 req.setAttribute("errorLogin", "Tu usuario técnico está desactivado. Contacta a tu empresa.");
-                req.getRequestDispatcher("index.jsp").forward(req, resp);
+                req.getRequestDispatcher("loginEmpleados.jsp").forward(req, resp);
+                return;
+            }
+
+            //validar empresa este activa
+            EmpresaDAO empresaDao = new EmpresaDAO();
+            Empresa empresaAsociada = empresaDao.buscarPorId(empleadoLogueado.getEmpresa_id());
+
+            if (empresaAsociada == null || !"ACTIVO".equals(empresaAsociada.getEstado())) {
+                req.setAttribute("errorLogin", "El acceso está restringido porque la empresa asociada no se encuentra activa.");
+                req.getRequestDispatcher("loginEmpleados.jsp").forward(req, resp);
                 return;
             }
 

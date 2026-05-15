@@ -143,4 +143,30 @@ public class EmpresaDAO {
             return 0;
         }
     }
+
+    public Empresa buscarPorId(int id) {
+        String sql = "SELECT * FROM empresas WHERE ID = ?";
+        Empresa emp = null;
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+
+            if (rs.next()) {
+                emp = new Empresa();
+                emp.setID(rs.getInt("ID"));
+                emp.setEmail(rs.getString("email"));
+                emp.setNombre(rs.getString("nombre"));
+                emp.setCiudad(rs.getString("ciudad"));
+                emp.setDireccion(rs.getString("direccion"));
+                emp.setTelefono(rs.getInt("telefono"));
+                emp.setSiglas(rs.getString("siglas"));
+                emp.setEstado(rs.getString("estado"));
+                emp.setCreated_at(rs.getString("created_at"));
+                emp.setUpdate_at(rs.getString("update_at"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error al buscar empresa: " + e.toString());
+        }
+        return emp;
+    }
 }
