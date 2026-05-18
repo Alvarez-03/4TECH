@@ -21,50 +21,49 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col justify-center font-sans">
+<body class="bg-gray-50 min-h-screen flex flex-col justify-center items-center font-sans p-4">
 
-<div class="w-full max-w-sm mx-auto px-6">
+<div class="w-full max-w-md mx-auto">
 
-    <header class="text-center mb-10">
-        <div class="flex justify-center mb-4">
-            <img src="IMG/4TECH.png" alt="logo4TECH" class="w-32 h-auto">
+    <header class="text-center mb-8">
+        <div class="flex justify-center mb-2">
+            <img src="IMG/4TECH.png" alt="logo4TECH" class="w-28 h-28 md:w-36 md:h-36 object-contain">
         </div>
-        <h1 class="text-2xl font-bold text-gray-900">Panel Técnico</h1>
-        <p class="text-gray-500 mt-2">Ingresa para gestionar tus órdenes</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Panel Técnico</h1>
+        <p class="text-sm md:text-base text-gray-500 mt-1">Ingresa para gestionar tus órdenes</p>
     </header>
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-100/80">
         <form action="SvEmpleados" method="POST" class="space-y-5">
             <input type="hidden" name="accion" value="loginEmpleado">
 
-            <div>
-                <label for="email" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 ml-1">Correo Electrónico</label>
+            <div class="text-start">
+                <label for="email" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5 ml-1">Correo Electrónico</label>
                 <input id="email" type="email" name="email" required
-                       class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all"
+                       class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white outline-none transition-all text-base sm:text-sm"
                        placeholder="nombre@4tech.com" />
             </div>
 
-            <div>
-                <label for="password" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 ml-1">Contraseña</label>
+            <div class="text-start">
+                <label for="password" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5 ml-1">Contraseña</label>
                 <input id="password" type="password" name="password" required
-                       class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all"
+                       class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white outline-none transition-all text-base sm:text-sm"
                        placeholder="••••••••" />
             </div>
 
             <div class="pt-2">
                 <button type="submit"
-                        class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform shadow-lg">
+                        class="w-full bg-gray-900 text-white py-3.5 rounded-xl font-bold text-base md:text-lg shadow-md hover:bg-gray-800 active:scale-[0.98] transition-all duration-200">
                     Iniciar Sesión
                 </button>
             </div>
+            <footer class="mt-8 text-center">
+                <a href="index.jsp" class="inline-flex items-center text-sm font-semibold text-primary hover:text-blue-800 transition-colors gap-2">
+                    &larr; Volver a Acceso Empresarial
+                </a>
+            </footer>
         </form>
     </div>
-
-    <footer class="mt-8 text-center">
-        <a href="index.jsp" class="text-sm font-semibold text-primary hover:text-blue-800 transition-colors">
-            &larr; Volver a Acceso Empresarial
-        </a>
-    </footer>
 </div>
 
 <%-- Manejo de errores con SweetAlert2 --%>
