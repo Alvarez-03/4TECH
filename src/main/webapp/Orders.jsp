@@ -177,6 +177,13 @@
                         </div>
                     </div>
 
+                    <div class="bg-white rounded-xl p-4 min-h-[180px] shadow-inner flex flex-col md:col-span-2">
+                        <h4 class="text-blue-700 font-black text-lg uppercase mb-2 tracking-tighter">Repuestos Utilizados</h4>
+
+                        <div id="det-productos-list" class="flex-1 overflow-y-auto max-h-[140px] space-y-2 pr-1 custom-scroll">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>

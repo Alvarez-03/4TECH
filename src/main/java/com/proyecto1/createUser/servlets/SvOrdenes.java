@@ -31,31 +31,46 @@ public class SvOrdenes extends HttpServlet {
 
         if ("listarSuministros".equals(accion)) {
             String ordenIdStr = request.getParameter("ordenId");
+            String tipoVista = request.getParameter("tipoVista");
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 
             if (ordenIdStr != null && !ordenIdStr.isEmpty()) {
                 BigInteger ordenId = new BigInteger(ordenIdStr);
-
-                List<long[]> productosAsignados = dao.obtenerProductosPorOrden(ordenId);
-
                 StringBuilder json = new StringBuilder();
                 json.append("[");
-                for (int i = 0; i < productosAsignados.size(); i++) {
-                    long[] item = productosAsignados.get(i); // [producto_id, cantidad]
-                    json.append("{");
-                    json.append("\"producto_id\":").append(item[0]).append(",");
-                    json.append("\"cantidad\":").append(item[1]);
-                    json.append("}");
-                    if (i < productosAsignados.size() - 1) json.append(",");
-                }
-                json.append("]");
 
+                if ("detalles".equals(tipoVista)) {
+                    List<Object[]> productosAsignados = dao.obtenerProductosConNombrePorOrden(ordenId);
+                    for (int i = 0; i < productosAsignados.size(); i++) {
+                        Object[] item = productosAsignados.get(i); // [id, nombre, cantidad]
+                        json.append("{");
+                        json.append("\"producto_id\":").append(item[0]).append(",");
+                        json.append("\"nombre\":\"").append(item[1].toString().replace("\"", "\\\"")).append("\",");
+                        json.append("\"cantidad\":").append(item[2]);
+                        json.append("}");
+                        if (i < productosAsignados.size() - 1) json.append(",");
+                    }
+                }
+                else {
+                    List<long[]> productosAsignados = dao.obtenerProductosPorOrden(ordenId);
+                    for (int i = 0; i < productosAsignados.size(); i++) {
+                        long[] item = productosAsignados.get(i); // [id, cantidad]
+                        json.append("{");
+                        json.append("\"producto_id\":").append(item[0]).append(",");
+                        json.append("\"cantidad\":").append(item[1]);
+                        json.append("}");
+                        if (i < productosAsignados.size() - 1) json.append(",");
+                    }
+                }
+
+                json.append("]");
                 response.getWriter().write(json.toString());
             } else {
                 response.getWriter().write("[]");
             }
-            return; // Cortar el flujo para no ir a Orders.jsp
+            return;
         }
         
         HttpSession sesion = request.getSession();

@@ -265,14 +265,43 @@ public class OrdenServicioDAO {
     public List<long[]> obtenerProductosPorOrden(BigInteger ordenId) {
         List<long[]> lista = new ArrayList<>();
         String sql = "SELECT producto_id, cantidad FROM orden_productos WHERE orden_id = ?";
-        try (Connection con = cn.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setObject(1, ordenId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(new long[]{rs.getLong("producto_id"), rs.getLong("cantidad")});
+        try (Connection conStr = cn.getConnection(); PreparedStatement psStr = conStr.prepareStatement(sql)) {
+            psStr.setObject(1, ordenId);
+            try (ResultSet rsStr = psStr.executeQuery()) {
+                while (rsStr.next()) {
+                    lista.add(new long[]{
+                            rsStr.getLong("producto_id"),
+                            rsStr.getLong("cantidad")
+                    });
                 }
             }
-        } catch (SQLException e) { System.err.println("Error al leer productos de la orden: " + e.getMessage()); }
+        } catch (SQLException e) {
+            System.err.println("Error al leer suministros para edición: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // 2. MÉTODO PARA LA VISTA DE DETALLES: Hace el INNER JOIN real con la tabla 'inventario'
+    public List<Object[]> obtenerProductosConNombrePorOrden(BigInteger ordenId) {
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT op.producto_id, i.nombre, op.cantidad " +
+                "FROM orden_productos op " +
+                "INNER JOIN inventario i ON op.producto_id = i.producto_id " +
+                "WHERE op.orden_id = ?";
+        try (Connection conStr = cn.getConnection(); PreparedStatement psStr = conStr.prepareStatement(sql)) {
+            psStr.setObject(1, ordenId);
+            try (ResultSet rsStr = psStr.executeQuery()) {
+                while (rsStr.next()) {
+                    lista.add(new Object[]{
+                            rsStr.getLong("producto_id"),
+                            rsStr.getString("nombre"), // Ahora sí la encuentra en la tabla inventario
+                            rsStr.getInt("cantidad")
+                    });
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al leer suministros para vista de detalles: " + e.getMessage());
+        }
         return lista;
     }
 }

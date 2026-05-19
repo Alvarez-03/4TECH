@@ -34,6 +34,8 @@ function verDetalleOrden(id, reporte, diagnostico, observaciones, estado, fecha,
     } else {
         badge.className = "bg-blue-600 text-white px-6 py-2 rounded-full font-black text-sm uppercase self-center shadow-lg";
     }
+
+    cargarDetallesSuministrosVista(id);
 }
 
 function generarFactura(ID) {
@@ -75,4 +77,47 @@ function filtrarOrdenes() {
             tarjeta.style.display = "none"; // Ocultar
         }
     }
+}
+
+function cargarDetallesSuministrosVista(ordenId) {
+    const contenedor = document.getElementById('det-productos-list');
+
+    // Mostramos un spinner limpio mientras carga
+    contenedor.innerHTML = `
+        <div class="text-center py-4 text-gray-400">
+            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando repuestos...
+        </div>`;
+
+    fetch(`SvOrdenes?accion=listarSuministros&ordenId=${ordenId}&tipoVista=detalles`)
+        .then(res => res.ok ? res.json() : Promise.reject("Error"))
+        .then(productos => {
+            contenedor.innerHTML = ''; // Limpiar spinner
+
+            if (productos.length === 0) {
+                contenedor.innerHTML = `
+                    <p class="text-xs text-gray-400 italic text-center py-4">
+                        Sin repuestos registrados en esta orden.
+                    </p>`;
+                return;
+            }
+
+            // Inyectamos cada repuesto formateado de manera elegante
+            productos.forEach(p => {
+                const fila = document.createElement('div');
+                fila.className = "flex justify-between items-center bg-gray-50 border-l-4 border-emerald-500 p-2 rounded shadow-sm";
+                fila.innerHTML = `
+                    <span class="text-xs font-bold text-gray-700 uppercase tracking-tight truncate ">
+                        ${p.nombre}
+                    </span>
+                    <span class="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2 py-0.5 rounded-full uppercase">
+                        Cant: ${p.cantidad}
+                    </span>
+                `;
+                contenedor.appendChild(fila);
+            });
+        })
+        .catch(err => {
+            console.error("Error al cargar suministros en vista:", err);
+            contenedor.innerHTML = '<p class="text-xs text-red-500 text-center py-4">Error al sincronizar suministros.</p>';
+        });
 }
