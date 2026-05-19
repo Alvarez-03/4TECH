@@ -12,6 +12,7 @@
 
     <script src="resources/ControlModal.js"></script>
     <script src="resources/ControlOrders.js"></script>
+    <script src="resources/ControlSteps.js"></script>
 
     <meta charset="utf-8">
     <title>ORDENES DE SERVICIO</title>

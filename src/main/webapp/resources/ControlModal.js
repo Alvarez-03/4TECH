@@ -180,6 +180,10 @@ function enviarFormulario(event) {
                         window.location.href = "SvEmpleados";
                     }
 
+                    else if (tipoModalActual === 'FormRegisterOrd' || tipoModalActual === 'FormUpdateOrd') {
+                        window.location.href = "Orders.jsp";
+                    }
+
                     else {
                         location.reload();
                     }
@@ -300,6 +304,9 @@ function abrirModalActualizarTrabajador(button) {
 }
 
 function abrirModalActualizarOrden(button) {
+
+    resetearModalesFlujo()
+
     // 1. Abrimos el modal base
     abrirModal(button);
 
@@ -322,7 +329,12 @@ function abrirModalActualizarOrden(button) {
     document.getElementById('upd-observaciones').value = (observaciones === 'null') ? "" : observaciones;
     document.getElementById('upd-estado-actual').value = estado;
 
-    // 5. El select de empleados tarda un poco en cargar por el fetch,
+    //5. cargamos los productos que tiene la orden asignados
+    setTimeout(() => {
+        cargarSuministrosPreviosOrden(id);
+    }, 400);
+
+    // 6. El select de empleados tarda un poco en cargar por el fetch,
     // le damos un pequeño tiempo para seleccionar al empleado correcto
     setTimeout(() => {
         const selectEmp = document.getElementById('upd-empleado-id');

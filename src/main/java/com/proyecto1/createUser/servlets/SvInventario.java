@@ -40,18 +40,44 @@ public class SvInventario extends HttpServlet {
         req.getSession().setAttribute("listInventario", lista);
     }
 
-    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession sesion = req.getSession();
-
         Long idEmpresa = obtenerIdEmpresaDesdeSesion(sesion);
 
         if (idEmpresa != null) {
             List<Producto> lista = dao.listarPorEmpresa(idEmpresa);
+
+            // REVISAR SI NOS PIDEN JSON DESDE LAS ÓRDENES
+            String format = req.getParameter("format");
+            if ("json".equals(format)) {
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
+
+                // Construimos un JSON manual simple para no obligarte a importar librerías externas (Gson/Jackson)
+                StringBuilder json = new StringBuilder();
+                json.append("[");
+                for (int i = 0; i < lista.size(); i++) {
+                    Producto p = lista.get(i);
+                    json.append("{");
+                    json.append("\"id\":").append(p.getProducto_id()).append(",");
+                    // Reemplazamos comillas por si el nombre tiene caracteres especiales
+                    json.append("\"nombre\":\"").append(p.getNombre().replace("\"", "\\\"")).append("\",");
+                    json.append("\"stock\":").append(p.getCantidad()).append(",");
+                    json.append("\"precio\":").append(p.getCosto());
+                    json.append("}");
+                    if (i < lista.size() - 1) {
+                        json.append(",");
+                    }
+                }
+                json.append("]");
+
+                resp.getWriter().write(json.toString());
+                return; // Cortamos el flujo aquí para que no redirija
+            }
+
             sesion.setAttribute("listInventario", lista);
             resp.sendRedirect("Inventory.jsp");
         } else {
-            // Si no hay empresa en sesión, mandamos al login
             resp.sendRedirect("index.jsp");
         }
     }
