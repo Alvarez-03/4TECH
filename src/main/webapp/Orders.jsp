@@ -41,15 +41,18 @@
                 <div class="card-orden bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all relative"">
 
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-blue-700 font-black text-xl italic tracking-tighter">
-                            ORD-<%= String.format("%04d", ord.getIDorden()) %>
-                        </span>
-
-                        <div class="flex items-center gap-2">
-                            <span class="bg-blue-600 text-white text-base italic px-3 py-1 rounded-full font-bold uppercase">
-                                <%= ord.getEstado_actual() %>
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="text-blue-700 font-black text-xl italic tracking-tighter">
+                                ORD-<%= String.format("%04d", ord.getIDorden()) %>
                             </span>
 
+                            <div class="flex items-center">
+                                <span class="bg-blue-600 text-white text-xs italic px-4 py-1 rounded-full font-black uppercase tracking-wide shadow-sm">
+                                    <%= ord.getEstado_actual() %>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
                             <button data-type="UpdOrd"
                                     data-id="<%= ord.getIDorden() %>"
                                     data-reporte="<%= ord.getReporte().replace("\"", "&quot;") %>"
@@ -59,13 +62,21 @@
                                     data-empleado="<%= ord.getEmpleado_id() %>"
                                     data-cliente="<%= ord.getCliente_id() %>"
                                     onclick="abrirModalActualizarOrden(this)"
-                                    class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
+                                    class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
                                     title="Editar Orden">
-                                <i class="fa-solid fa-pen-to-square text-lg"></i>
+                                <i class="fa-solid fa-pen-to-square text-base"></i>
                             </button>
-                            <button onclick="generarFactura('<%= ord.getIDorden() %>')"
-                                class="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg font-black text-sm uppercase transition-all active:scale-95 shadow-lg flex items-center gap-2">
-                                <i class="fa-solid fa-file-pdf text-lg"></i>
+
+                            <button onclick="descargarFactura('<%= ord.getIDorden() %>')"
+                                    class="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-lg font-bold transition-all active:scale-95 shadow-md flex items-center justify-center"
+                                    title="Descargar PDF">
+                                <i class="fa-solid fa-file-pdf text-base"></i>
+                            </button>
+
+                            <button onclick="enviarFacturaCorreo('<%= ord.getIDorden() %>')"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-lg font-bold transition-all active:scale-95 shadow-md flex items-center justify-center"
+                                    title="Enviar Factura por Correo">
+                                <i class="fa-solid fa-envelope text-base"></i>
                             </button>
                         </div>
                     </div>

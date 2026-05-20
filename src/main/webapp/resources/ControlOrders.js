@@ -38,23 +38,59 @@ function verDetalleOrden(id, reporte, diagnostico, observaciones, estado, fecha,
     cargarDetallesSuministrosVista(id);
 }
 
-function generarFactura(ID) {
-
-    console.log(ID +' | orden')
-
+function descargarFactura(ID) {
     Swal.fire({
         title: 'Generando PDF...',
         text: 'Tu factura se descargará en unos segundos',
         timer: 2000,
         showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
+        didOpen: () => { Swal.showLoading(); }
     });
 
-    // 5. Llamar al Servlet en una nueva pestaña para descargar el PDF
-    // Esto evita que la página actual se recargue o se cierre
-    window.open('SvFacturaPDF?id=' + ID, '_blank');
+    // Pasamos accion=descargar
+    window.open('SvFacturaPDF?id=' + ID + '&accion=descargar', '_blank');
+}
+
+function enviarFacturaCorreo(ID) {
+    Swal.fire({
+        title: 'Enviando correo...',
+        text: 'Por favor, espera un momento mientras procesamos el envío.',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    // Petición asíncrona al Servlet con accion=enviar
+    fetch('SvFacturaPDF?id=' + ID + '&accion=enviar')
+        .then(response => response.text())
+        .then(resultado => {
+            if (resultado === "OK") {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Enviado!',
+                    text: 'La factura ha sido enviada al correo del cliente correctamente.'
+                });
+            } else if (resultado === "SIN_CORREO") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Advertencia',
+                    text: 'El cliente no tiene un correo electrónico registrado.'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema en el servidor Mailtrap al enviar el correo.'
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Red',
+                text: 'No se pudo establecer conexión con el servidor.'
+            });
+        });
 }
 
 function filtrarOrdenes() {
