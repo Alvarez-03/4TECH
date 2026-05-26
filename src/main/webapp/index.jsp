@@ -31,7 +31,6 @@
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-2">
         <img src="IMG/4TECH.png" alt="logo4TECH" class="w-16 h-16 object-contain">
-        <span class="text-xs bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded border border-slate-200">by PROOFCODE</span>
       </div>
       <div class="hidden md:flex items-center gap-8 font-semibold text-slate-600">
         <a href="#que-es" class="hover:text-brand-600 transition-colors">¿Qué es?</a>
@@ -64,10 +63,15 @@
           <p class="text-lg text-slate-600 max-w-xl mx-auto lg:mx-0">
             Controla órdenes de servicio, administra el inventario de repuestos y mantén informados a tus clientes en tiempo real. Todo desde una sola plataforma.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <div class="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start">
+            <a href="consultaEstado.jsp" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-center shadow-lg shadow-brand-600/20 transition-transform active:scale-95 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-magnifying-glass"></i> Consultar mi Orden
+            </a>
+
             <a href="#precios" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-xl text-center shadow-lg transition-transform active:scale-95">
               Ver Planes y Precios
             </a>
+
             <a href="#que-es" class="bg-white hover:bg-slate-100 text-slate-700 font-bold px-8 py-4 rounded-xl text-center border border-slate-200 shadow-sm transition-transform active:scale-95">
               Conocer más
             </a>
