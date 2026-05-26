@@ -304,4 +304,47 @@ public class OrdenServicioDAO {
         }
         return lista;
     }
+
+    public List<OrdenServicio> consultarPublico(String criterio) {
+        List<OrdenServicio> lista = new ArrayList<>();
+        String sql = "SELECT * FROM ordenservicios WHERE IDorden = ? OR cliente_id = ? ORDER BY fecha_ingreso DESC";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+
+
+            long idOrden = 0;
+            try {
+                idOrden = Long.parseLong(criterio);
+            } catch (NumberFormatException e) {
+                idOrden = -1;
+            }
+
+            ps.setLong(1, idOrden);
+            ps.setString(2, criterio);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                OrdenServicio ord = new OrdenServicio();
+
+                ord.setIDorden(rs.getBigDecimal("IDorden").toBigInteger());
+                ord.setReporte(rs.getString("reporte"));
+                ord.setDiagnostico(rs.getString("diagnostico"));
+                ord.setEstado_actual(rs.getString("estado_actual"));
+                ord.setObservaciones(rs.getString("observaciones"));
+                ord.setFecha_ingreso(rs.getString("fecha_ingreso"));
+                ord.setEmpresa_id(rs.getInt("empresa_id"));
+                ord.setEmpleado_id(rs.getInt("empleado_id"));
+                ord.setCliente_id(rs.getString("cliente_id"));
+                lista.add(ord);
+
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al realizar consulta pública de órdenes: " + e.toString());
+        } finally {
+            try { if (con != null) con.close(); } catch (SQLException e) { /* ignored */ }
+        }
+        return lista;
+    }
 }
