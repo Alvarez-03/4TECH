@@ -58,7 +58,7 @@
                 </button>
             </div>
             <footer class="mt-8 text-center">
-                <a href="index.jsp" class="inline-flex items-center text-sm font-semibold text-primary hover:text-blue-800 transition-colors gap-2">
+                <a href="loginEmpresarial.jsp" class="inline-flex items-center text-sm font-semibold text-primary hover:text-blue-800 transition-colors gap-2">
                     &larr; Volver a Acceso Empresarial
                 </a>
             </footer>

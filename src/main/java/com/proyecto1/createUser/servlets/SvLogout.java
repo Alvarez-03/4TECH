@@ -14,7 +14,7 @@ public class SvLogout extends HttpServlet {
 
         // 1. Obtener la sesión actual
         HttpSession session = request.getSession(false);
-        String destino = "index.jsp"; // Por defecto para Empresas/Admin
+        String destino = "loginEmpresarial.jsp"; // Por defecto para Empresas/Admin
 
         if (session != null) {
             // 2. Revisar el rol antes de borrar la sesión

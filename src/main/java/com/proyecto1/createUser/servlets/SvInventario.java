@@ -78,7 +78,7 @@ public class SvInventario extends HttpServlet {
             sesion.setAttribute("listInventario", lista);
             resp.sendRedirect("Inventory.jsp");
         } else {
-            resp.sendRedirect("index.jsp");
+            resp.sendRedirect("loginEmpresarial.jsp");
         }
     }
 

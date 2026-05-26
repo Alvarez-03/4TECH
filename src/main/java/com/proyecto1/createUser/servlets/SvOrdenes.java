@@ -78,7 +78,7 @@ public class SvOrdenes extends HttpServlet {
         Object usuario = sesion.getAttribute("usuarioLogueado");
 
         if (usuario == null || permisos == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("loginEmpresarial.jsp");
             return;
         }
 

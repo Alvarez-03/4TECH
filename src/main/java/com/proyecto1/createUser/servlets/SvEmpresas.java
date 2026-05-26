@@ -81,7 +81,7 @@ public class SvEmpresas extends HttpServlet {
                     !"ACTIVO".equalsIgnoreCase(empresaLogueada.getEstado())) {
 
                 req.setAttribute("errorLogin", "Tu cuenta está suspendida. Contacta al administrador.");
-                req.getRequestDispatcher("index.jsp").forward(req, resp);
+                req.getRequestDispatcher("loginEmpresarial.jsp").forward(req, resp);
                 return;
             }
 
@@ -94,7 +94,7 @@ public class SvEmpresas extends HttpServlet {
             }
         } else {
             req.setAttribute("errorLogin", "Correo o contraseña incorrectos.");
-            req.getRequestDispatcher("index.jsp").forward(req, resp);
+            req.getRequestDispatcher("loginEmpresarial.jsp").forward(req, resp);
         }
     }
 

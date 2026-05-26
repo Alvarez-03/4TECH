@@ -13,7 +13,7 @@
 
 <nav class="bg-blue-700 text-white shadow-md px-6 py-2 flex justify-between items-center">
     <img src="IMG/4TECH.png" alt="logo4TECH" class="w-16 h-16 object-contain">
-    <a href="index.jsp" class="text-sm bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-lg font-bold transition-all shadow">
+    <a href="loginEmpresarial.jsp" class="text-sm bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-lg font-bold transition-all shadow">
         Página principal.
     </a>
 </nav>
