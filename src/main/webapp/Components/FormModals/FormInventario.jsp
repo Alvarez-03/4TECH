@@ -30,6 +30,14 @@
                  class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
         </div>
       </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Proveedor Asociado</label>
+        <select name="proveedor_id" id="inv-proveedor"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white text-gray-700">
+          <option value="">-- Sin Proveedor (Ninguno) --</option>
+        </select>
+      </div>
     </div>
 
     <div class="pt-6 flex justify-end gap-3">

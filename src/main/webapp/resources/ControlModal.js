@@ -392,6 +392,37 @@ function inicializarBuscadorCliente() {
     });
 }
 
+function cargarSelectProveedores(idProveedorSeleccionado) {
+    const select = document.getElementById('inv-proveedor');
+    if (!select) return;
+
+    // Consultamos los proveedores asíncronamente mediante AJAX usando tu formato JSON
+    fetch('SvProveedores?format=json')
+        .then(response => response.json())
+        .then(proveedores => {
+            // Reiniciamos las opciones dejando únicamente la opción por defecto
+            select.innerHTML = '<option value="">-- Sin Proveedor (Ninguno) --</option>';
+
+            proveedores.forEach(prov => {
+                const option = document.createElement('option');
+                option.value = prov.id;
+                option.text = prov.nombreEmpresa;
+
+                // Si el ID coincide con el del producto que se está editando, se deja seleccionado
+                if (idProveedorSeleccionado !== null && idProveedorSeleccionado !== undefined) {
+                    if (String(prov.id).trim() === String(idProveedorSeleccionado).trim()) {
+                        option.selected = true;
+                    }
+                }
+                select.appendChild(option);
+            });
+        })
+        .catch(err => {
+            console.error("Error al cargar proveedores en el select de inventario: ", err);
+            select.innerHTML = '<option value="">Error al cargar distribuidores</option>';
+        });
+}
+
 function abrirModalActualizarInventario(button) {
     // 1. Abrir el modal base
     abrirModal(button);
@@ -401,7 +432,10 @@ function abrirModalActualizarInventario(button) {
     const nombre = button.getAttribute('data-nombre');
     const cantidad = button.getAttribute('data-cantidad');
     const costo = button.getAttribute('data-costo');
+    const idProveedorActual = button.getAttribute('data-proveedor');
+    console.log(idProveedorActual)
 
+    cargarSelectProveedores(idProveedorActual);
     // 3. Llenar el formulario (usando IDs específicos de FormInventario.jsp)
     const container = document.getElementById('container-FormInventario');
     if (container) {
@@ -424,6 +458,7 @@ function abrirModalRegistroInventario(button) {
         document.getElementById('inv-accion').value = "registrar";
         document.getElementById('modalInventarioTitulo').innerText = "Registrar Producto";
     }
+    cargarSelectProveedores(null);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

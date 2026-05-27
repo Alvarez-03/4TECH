@@ -124,6 +124,11 @@ public class SvInventario extends HttpServlet {
         p.setCosto(Double.parseDouble(req.getParameter("costo")));
         p.setEmpresa_id(idEmpresa);
 
+        String provIdStr = req.getParameter("proveedor_id");
+        if (provIdStr != null && !provIdStr.trim().isEmpty()) {
+            p.setProveedorId(Integer.parseInt(provIdStr));
+        }
+
         if (dao.registrar(p) > 0) {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write("Producto registrado exitosamente");
@@ -139,6 +144,11 @@ public class SvInventario extends HttpServlet {
         p.setCantidad(Integer.parseInt(req.getParameter("cantidad")));
         p.setCosto(Double.parseDouble(req.getParameter("costo")));
         p.setEmpresa_id(idEmpresa); // Validamos que pertenezca a la misma empresa
+
+        String provIdStr = req.getParameter("proveedor_id");
+        if (provIdStr != null && !provIdStr.trim().isEmpty()) {
+            p.setProveedorId(Integer.parseInt(provIdStr));
+        }
 
         if (dao.actualizar(p) > 0) {
             resp.setStatus(HttpServletResponse.SC_OK);

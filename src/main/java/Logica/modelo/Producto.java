@@ -6,6 +6,7 @@ public class Producto {
     private int cantidad;
     private double costo;
     private long empresa_id;
+    private int proveedorId;
 
     public Producto() {}
 
@@ -48,4 +49,8 @@ public class Producto {
     public void setProducto_id(long producto_id) {
         this.producto_id = producto_id;
     }
+
+    public int getProveedorId() { return proveedorId; }
+
+    public void setProveedorId(int proveedorId) { this.proveedorId = proveedorId; }
 }

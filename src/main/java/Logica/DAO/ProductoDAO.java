@@ -32,6 +32,7 @@ public class ProductoDAO {
                 p.setCantidad(rs.getInt("cantidad"));
                 p.setCosto(rs.getDouble("costo"));
                 p.setEmpresa_id(rs.getLong("empresa_id"));
+                p.setProveedorId(rs.getInt("proveedor_id"));
                 lista.add(p);
             }
         } catch (SQLException e) {
@@ -41,7 +42,7 @@ public class ProductoDAO {
     }
 
     public int registrar(Producto p) {
-        String sql = "INSERT INTO inventario (nombre, cantidad, costo, empresa_id) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO inventario (nombre, cantidad, costo, empresa_id, proveedor_id) VALUES (?,?,?,?,?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -49,6 +50,7 @@ public class ProductoDAO {
             ps.setInt(2, p.getCantidad());
             ps.setDouble(3, p.getCosto());
             ps.setLong(4, p.getEmpresa_id());
+            ps.setLong(5, p.getProveedorId());
             return ps.executeUpdate();
         } catch (SQLException e) {
             return 0;
@@ -71,15 +73,22 @@ public class ProductoDAO {
     }
 
     public int actualizar(Producto p) {
-        String sql = "UPDATE inventario SET nombre = ?, cantidad = ?, costo = ? WHERE producto_id = ? AND empresa_id = ?";
+        String sql = "UPDATE inventario SET nombre = ?, cantidad = ?, costo = ?, proveedor_id = ? WHERE producto_id = ? AND empresa_id = ?";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, p.getNombre());
             ps.setInt(2, p.getCantidad());
             ps.setDouble(3, p.getCosto());
-            ps.setLong(4, p.getProducto_id());
-            ps.setLong(5, p.getEmpresa_id());
+
+            if (p.getProveedorId() == 0) {
+                ps.setNull(4, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(4, p.getProveedorId());
+            }
+
+            ps.setLong(5, p.getProducto_id());
+            ps.setLong(6, p.getEmpresa_id());
 
             return ps.executeUpdate();
         } catch (SQLException e) {
