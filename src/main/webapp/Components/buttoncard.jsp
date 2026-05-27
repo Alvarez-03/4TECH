@@ -77,6 +77,14 @@
             </a>
             <% } %>
 
+            <a href="Dashboard.jsp"
+               class="group bg-white border border-gray-100 p-6 sm:p-8 flex flex-col items-center justify-center aspect-square w-full max-w-sm text-gray-800 font-bold rounded-3xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                <div class="p-5 rounded-2xl bg-emerald-50 text-emerald-600 mb-5 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fa-solid fa-chart-pie text-6xl sm:text-7xl"></i>
+                </div>
+                <span class="text-lg sm:text-xl text-center tracking-tight">Dashboard Analítico</span>
+            </a>
+
         </section>
     </main>
 </div>
