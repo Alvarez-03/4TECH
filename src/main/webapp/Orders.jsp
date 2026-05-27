@@ -17,6 +17,7 @@
     <meta charset="utf-8">
     <title>ORDENES DE SERVICIO</title>
     <%
+        Object permisosUser = session.getAttribute("PERMISOS");
         if (session.getAttribute("listaOrdenes") == null && session.getAttribute("usuarioLogueado") != null) {
             response.sendRedirect("SvOrdenes");
             return;
@@ -67,17 +68,19 @@
                                 <i class="fa-solid fa-pen-to-square text-base"></i>
                             </button>
 
-                            <button onclick="descargarFactura('<%= ord.getIDorden() %>')"
-                                    class="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-lg font-bold transition-all active:scale-95 shadow-md flex items-center justify-center"
-                                    title="Descargar PDF">
-                                <i class="fa-solid fa-file-pdf text-base"></i>
-                            </button>
+                            <%if (permisosUser.equals("EMPRESA")) {%>
+                                <button onclick="descargarFactura('<%= ord.getIDorden() %>')"
+                                        class="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-lg font-bold transition-all active:scale-95 shadow-md flex items-center justify-center"
+                                        title="Descargar PDF">
+                                    <i class="fa-solid fa-file-pdf text-base"></i>
+                                </button>
 
-                            <button onclick="enviarFacturaCorreo('<%= ord.getIDorden() %>')"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-lg font-bold transition-all active:scale-95 shadow-md flex items-center justify-center"
-                                    title="Enviar Factura por Correo">
-                                <i class="fa-solid fa-envelope text-base"></i>
-                            </button>
+                                <button onclick="enviarFacturaCorreo('<%= ord.getIDorden() %>')"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-lg font-bold transition-all active:scale-95 shadow-md flex items-center justify-center"
+                                        title="Enviar Factura por Correo">
+                                    <i class="fa-solid fa-envelope text-base"></i>
+                                </button>
+                            <%}%>
                         </div>
                     </div>
 
