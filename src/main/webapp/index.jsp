@@ -64,7 +64,7 @@
             Controla órdenes de servicio, administra el inventario de repuestos y mantén informados a tus clientes en tiempo real. Todo desde una sola plataforma.
           </p>
           <div class="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start">
-            <a href="consultaEstado.jsp" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-center shadow-lg shadow-brand-600/20 transition-transform active:scale-95 flex items-center justify-center gap-2">
+            <a href="Consulta.jsp" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-center shadow-lg shadow-brand-600/20 transition-transform active:scale-95 flex items-center justify-center gap-2">
               <i class="fa-solid fa-magnifying-glass"></i> Consultar mi Orden
             </a>
 
