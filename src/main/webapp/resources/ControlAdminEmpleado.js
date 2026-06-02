@@ -1,8 +1,4 @@
-/**
- * Confirma y ejecuta el cambio de estado de un colaborador
- * @param {number} id - ID del empleado
- * @param {string} estadoActual - Estado actual (ACTIVO/INACTIVO)
- */
+
 function confirmarCambioEstado(id, estadoActual) {
     const esActivo = estadoActual.toUpperCase() === 'ACTIVO';
     const nuevoEstadoNom = esActivo ? 'desactivar' : 'activar';
@@ -54,4 +50,55 @@ function ejecutarCambioEstado(id, estado) {
             console.error('Error:', error);
             Swal.fire('Error', 'No se pudo cambiar el estado del colaborador', 'error');
         });
+}
+
+function filtrarEmpleados() {
+    // 1. Obtener el valor del input y pasarlo a minúsculas
+    const input = document.getElementById("inputBusqueda");
+    const filtro = input.value.toLowerCase();
+
+    // 2. Obtener todas las filas del cuerpo de la tabla
+    const tabla = document.getElementById("tablaEmpleados");
+    const filas = tabla.getElementsByTagName("tr");
+
+    // 3. Recorrer cada fila
+    for (let i = 0; i < filas.length; i++) {
+        const celdas = filas[i].getElementsByTagName("td");
+        let coincidencia = false;
+
+        // Saltamos la fila si es la de "No hay resultados" (si existe)
+        if (celdas.length < 2) continue;
+
+        // 4. Revisar el contenido de cada celda de la fila actual
+        for (let j = 0; j < celdas.length; j++) {
+            const textoCelda = celdas[j].textContent || celdas[j].innerText;
+            if (textoCelda.toLowerCase().indexOf(filtro) > -1) {
+                coincidencia = true;
+                break; // Si ya encontramos el texto en una celda, pasamos a la siguiente fila
+            }
+        }
+
+        // 5. Mostrar u ocultar la fila según el resultado
+        if (coincidencia) {
+            filas[i].style.display = ""; // Mostrar
+        } else {
+            filas[i].style.display = "none"; // Ocultar
+        }
+    }
+
+    const filasVisibles = Array.from(filas).filter(f => f.style.display !== "none");
+    let mensajeError = document.getElementById("mensajeBusquedaVacia");
+
+    if (filasVisibles.length === 0) {
+        if (!mensajeError) {
+            mensajeError = document.createElement("tr");
+            mensajeError.id = "mensajeBusquedaVacia";
+            mensajeError.innerHTML = `<td colspan="6" class="px-6 py-10 text-center text-gray-400">
+            No se encontraron empleados que coincidan con "${filtro}"
+        </td>`;
+            tabla.appendChild(mensajeError);
+        }
+    } else if (mensajeError) {
+        mensajeError.remove();
+    }
 }

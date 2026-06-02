@@ -12,13 +12,23 @@ public class SvLogout extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. Obtener la sesión y destruirla
+        // 1. Obtener la sesión actual
         HttpSession session = request.getSession(false);
+        String destino = "loginEmpresarial.jsp"; // Por defecto para Empresas/Admin
+
         if (session != null) {
-            session.invalidate(); // Esto borra TODO (Permisos, Usuario, etc.)
+            // 2. Revisar el rol antes de borrar la sesión
+            String rol = (String) session.getAttribute("PERMISOS");
+
+            if ("EMPLEADO".equals(rol)) {
+                destino = "loginEmpleados.jsp"; // Redirigir al login técnico
+            }
+
+            // 3. Ahora sí, destruimos la sesión
+            session.invalidate();
         }
 
-        // 2. Mandar al usuario al login o inicio
-        response.sendRedirect("index.jsp");
+        // 4. Redirigir al destino correspondiente
+        response.sendRedirect(destino);
     }
 }

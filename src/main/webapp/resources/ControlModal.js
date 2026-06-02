@@ -9,15 +9,14 @@ function abrirModal(button) {
 
     if (!modal) return;
 
-    console.log("Abrir modal tipo:", type);
-
-    if (type === 'FormRegisterWork') {
+    if (tipoModalActual === 'FormRegisterOrd'){
+        console.log("FormRegisterOrd")
+        cargarEmpleadosDinamicos('empleado_id')
+        setTimeout(inicializarBuscadorCliente, 100);
+    }
+    if (tipoModalActual === 'FormRegisterWork' || tipoModalActual === 'UpdWork') {
         cargarEmpresasDinamicas('selectEmpresaRegistro');
     }
-    else if (type === 'UpdWork') {
-        cargarEmpresasDinamicas('selectEmpresaActualizar');
-    }
-
     // 1. Ocultar TODAS las secciones del modal primero
     document.querySelectorAll('.modal-section').forEach(section => {
         section.classList.add('hidden');
@@ -95,6 +94,22 @@ function cerrarModal() {
             title: '¿No actualizar colaborador?',
             text: 'Las modificaciones realizadas al trabajador se perderán.'
         },
+        'FormRegisterOrd': {
+            title: '¿No quieres agregar la orden?',
+            text: 'al aceptar se perderán todos los campos llenados.'
+        },
+        'UpdOrd': {
+            title: '¿Cancelar edición?',
+            text: 'Los cambios realizados en la orden no se guardarán.'
+        },
+        'FormInventario': {
+            title: '¿Cancelar registro?',
+            text: 'Los datos del producto no se guardarán.'
+        },
+        'UpdInventario': {
+            title: '¿Cancelar edición?',
+            text: 'Los cambios en el producto se perderán.'
+        }
     };
 
     // Obtenemos el mensaje según el tipo actual o uno por defecto
@@ -135,7 +150,6 @@ function ejecutarCierreEfectivo() {
     }, 300);
 }
 
-
 function enviarFormulario(event) {
     event.preventDefault();
 
@@ -159,11 +173,15 @@ function enviarFormulario(event) {
                     // --- LÓGICA DE REDIRECCIÓN SELECTIVA ---
 
                     if (tipoModalActual === 'UpdEmp' || tipoModalActual === 'FormRegisterEmp') {
-                        window.location.href = "SvUsuarios";
+                        window.location.href = "SvEmpresas";
                     }
 
                     else if (tipoModalActual === 'FormRegisterWork' || tipoModalActual === 'UpdWork') {
                         window.location.href = "SvEmpleados";
+                    }
+
+                    else if (tipoModalActual === 'FormRegisterOrd' || tipoModalActual === 'FormUpdateOrd') {
+                        window.location.href = "Orders.jsp";
                     }
 
                     else {
@@ -187,11 +205,12 @@ function enviarFormulario(event) {
 
 // Función para cargar las empresas desde el Servlet
 function cargarEmpresasDinamicas(idDelSelect) {
+    console.log("cargando empleados")
     const select = document.getElementById(idDelSelect);
 
     if (!select) return;
 
-    fetch('SvUsuarios?accion=listarActivas')
+    fetch('SvEmpresas?accion=listarActivas')
         .then(response => {
             if (!response.ok) throw new Error('Error en la red');
             return response.json();
@@ -208,6 +227,55 @@ function cargarEmpresasDinamicas(idDelSelect) {
         .catch(error => {
             console.error('Error:', error);
             select.innerHTML = '<option value="">Error al cargar empresas</option>';
+        });
+}
+
+function cargarEmpleadosDinamicos(idDelSelect) {
+    const select = document.getElementById(idDelSelect);
+
+    // Verificamos que el select exista en el DOM para evitar errores
+    if (!select) {
+        console.warn(`No se encontró el elemento con ID: ${idDelSelect}`);
+        return;
+    }
+
+    // Mostramos un mensaje de carga temporal
+    select.innerHTML = '<option value="" disabled selected>Cargando técnicos...</option>';
+
+    // Llamamos al Servlet SvEmpleados usando la nueva acción JSON
+    fetch('SvEmpleados?accion=listarPorEmpresaJSON')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener datos del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            select.innerHTML = '<option value="" disabled selected>Seleccione un técnico...</option>';
+
+            if (data.length === 0) {
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "No hay empleados activos disponibles";
+                option.disabled = true;
+                select.appendChild(option);
+                return;
+            }
+
+            data.forEach(emp => {
+                const option = document.createElement('option');
+                console.log(emp.id)
+                option.value = emp.id;
+                option.textContent = `${emp.nombre} — (${emp.cargo})`;
+                select.appendChild(option);
+            });
+
+            console.log("Empleados cargados exitosamente.");
+        })
+        .catch(error => {
+            console.error('Error en cargarEmpleadosDinamicos:', error);
+            select.innerHTML = '<option value="">Error al cargar la lista</option>';
         });
 }
 
@@ -233,6 +301,164 @@ function abrirModalActualizarTrabajador(button) {
             }
         }, 350);
     }
+}
+
+function abrirModalActualizarOrden(button) {
+
+    resetearModalesFlujo()
+
+    // 1. Abrimos el modal base
+    abrirModal(button);
+
+    // 2. Cargamos los empleados en el select de edición
+    cargarEmpleadosDinamicos('upd-empleado-id');
+
+    // 3. Capturamos los datos del botón
+    const id = button.getAttribute('data-id');
+    const reporte = button.getAttribute('data-reporte');
+    const diagnostico = button.getAttribute('data-diagnostico');
+    const observaciones = button.getAttribute('data-observaciones');
+    const estado = button.getAttribute('data-estado');
+    const empleadoId = button.getAttribute('data-empleado');
+
+    // 4. Llenamos los campos del modal
+    document.getElementById('edit-orden-id').innerText = "#" + id;
+    document.getElementById('upd-orden-id-hidden').value = id;
+    document.getElementById('upd-reporte').value = reporte;
+    document.getElementById('upd-diagnostico').value = (diagnostico === 'null') ? "" : diagnostico;
+    document.getElementById('upd-observaciones').value = (observaciones === 'null') ? "" : observaciones;
+    document.getElementById('upd-estado-actual').value = estado;
+
+    //5. cargamos los productos que tiene la orden asignados
+    setTimeout(() => {
+        cargarSuministrosPreviosOrden(id);
+    }, 400);
+
+    // 6. El select de empleados tarda un poco en cargar por el fetch,
+    // le damos un pequeño tiempo para seleccionar al empleado correcto
+    setTimeout(() => {
+        const selectEmp = document.getElementById('upd-empleado-id');
+        if (selectEmp) selectEmp.value = empleadoId;
+    }, 500);
+}
+function inicializarBuscadorCliente() {
+    const inputDoc = document.getElementById("documento_cliente");
+    const inputNombre = document.getElementById("nombre_cliente");
+    const inputTel = document.getElementById("telefono_cliente");
+    const inputEmail = document.getElementById("email_cliente");
+    const statusMsg = document.getElementById("cliente_status");
+
+    // Si no existen los campos (porque estamos en otro modal), salimos
+    if (!inputDoc) return;
+
+    inputDoc.addEventListener("blur", function() {
+        let doc = this.value.trim();
+        if (doc.length < 3) return;
+
+        statusMsg.innerHTML = '<span class="text-blue-500 animate-pulse">Buscando cliente...</span>';
+
+        fetch(`SvClientes?documento=${doc}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.documento) {
+                    inputNombre.value = data.nombre;
+                    inputTel.value = data.telefono;
+                    inputEmail.value = data.email;
+
+                    // Aplicar estilos de bloqueado
+                    [inputNombre, inputTel, inputEmail].forEach(el => {
+                        el.readOnly = true;
+                        el.classList.add('bg-gray-100', 'cursor-not-allowed', 'border-gray-200');
+                        el.classList.remove('bg-white', 'border-blue-300');
+                    });
+
+                    statusMsg.innerHTML = '<span class="flex items-center text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Cliente vinculado</span>';
+                } else {
+                    // ESTADO: CLIENTE NUEVO
+                    [inputNombre, inputTel, inputEmail].forEach(el => {
+                        el.value = "";
+                        el.readOnly = false;
+                        el.classList.remove('bg-gray-100', 'cursor-not-allowed', 'border-gray-200');
+                        el.classList.add('bg-white', 'border-blue-300', 'focus:ring-2');
+                    });
+
+                    statusMsg.innerHTML = '<span class="flex items-center text-amber-500 font-medium"><i class="fas fa-info-circle mr-1"></i> Cliente nuevo: complete los datos</span>';
+                }
+            })
+            .catch(err => {
+                console.error("Error buscando cliente:", err);
+                statusMsg.innerHTML = '<span class="text-red-500 text-sm">Error de conexión.</span>';
+            });
+    });
+}
+
+function cargarSelectProveedores(idProveedorSeleccionado) {
+    const select = document.getElementById('inv-proveedor');
+    if (!select) return;
+
+    // Consultamos los proveedores asíncronamente mediante AJAX usando tu formato JSON
+    fetch('SvProveedores?format=json')
+        .then(response => response.json())
+        .then(proveedores => {
+            // Reiniciamos las opciones dejando únicamente la opción por defecto
+            select.innerHTML = '<option value="">-- Sin Proveedor (Ninguno) --</option>';
+
+            proveedores.forEach(prov => {
+                const option = document.createElement('option');
+                option.value = prov.id;
+                option.text = prov.nombreEmpresa;
+
+                // Si el ID coincide con el del producto que se está editando, se deja seleccionado
+                if (idProveedorSeleccionado !== null && idProveedorSeleccionado !== undefined) {
+                    if (String(prov.id).trim() === String(idProveedorSeleccionado).trim()) {
+                        option.selected = true;
+                    }
+                }
+                select.appendChild(option);
+            });
+        })
+        .catch(err => {
+            console.error("Error al cargar proveedores en el select de inventario: ", err);
+            select.innerHTML = '<option value="">Error al cargar distribuidores</option>';
+        });
+}
+
+function abrirModalActualizarInventario(button) {
+    // 1. Abrir el modal base
+    abrirModal(button);
+
+    // 2. Capturar datos del botón
+    const id = button.getAttribute('data-id');
+    const nombre = button.getAttribute('data-nombre');
+    const cantidad = button.getAttribute('data-cantidad');
+    const costo = button.getAttribute('data-costo');
+    const idProveedorActual = button.getAttribute('data-proveedor');
+    console.log(idProveedorActual)
+
+    cargarSelectProveedores(idProveedorActual);
+    // 3. Llenar el formulario (usando IDs específicos de FormInventario.jsp)
+    const container = document.getElementById('container-FormInventario');
+    if (container) {
+        document.getElementById('inv-accion').value = "actualizar";
+        document.getElementById('inv-id').value = id;
+        document.getElementById('inv-nombre').value = nombre;
+        document.getElementById('inv-cantidad').value = cantidad;
+        document.getElementById('inv-costo').value = costo;
+
+        document.getElementById('modalInventarioTitulo').innerText = "Actualizar Producto";
+    }
+}
+
+// Función simple para resetear el modal al registrar nuevo
+function abrirModalRegistroInventario(button) {
+    abrirModal(button);
+    const form = document.getElementById('FormInventario');
+    if (form) {
+        form.reset();
+        document.getElementById('inv-accion').value = "registrar";
+        document.getElementById('modalInventarioTitulo').innerText = "Registrar Producto";
+    }
+    cargarSelectProveedores(null);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

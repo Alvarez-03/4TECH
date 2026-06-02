@@ -1,7 +1,7 @@
 package com.proyecto1.createUser.servlets;
 
-import Logica.Empresa;
-import Logica.EmpresaDAO;
+import Logica.modelo.Empresa;
+import Logica.DAO.EmpresaDAO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/SvUsuarios")
-public class SvUsuarios extends HttpServlet {
+@WebServlet("/SvEmpresas")
+public class SvEmpresas extends HttpServlet {
 
     // El GET lo usaremos para LISTAR las empresas en el Dashboard
     @Override
@@ -70,21 +70,31 @@ public class SvUsuarios extends HttpServlet {
         String password = req.getParameter("password");
 
         EmpresaDAO dao = new EmpresaDAO();
-        boolean puedeEntrar = dao.validarAcceso(email, password);
+        Empresa empresaLogueada = dao.validarAcceso(email, password);
 
-        if (puedeEntrar) {
+        if (empresaLogueada != null) {
             HttpSession sesion = req.getSession();
-            // Lógica de permisos
+
+            sesion.setAttribute("usuarioLogueado", empresaLogueada);
+
+            if (!Objects.equals(email, "superadmin@gmail.com") &&
+                    !"ACTIVO".equalsIgnoreCase(empresaLogueada.getEstado())) {
+
+                req.setAttribute("errorLogin", "Tu cuenta está suspendida. Contacta al administrador.");
+                req.getRequestDispatcher("loginEmpresarial.jsp").forward(req, resp);
+                return;
+            }
+
             if (Objects.equals(email, "superadmin@gmail.com")) {
                 sesion.setAttribute("PERMISOS", "SUPERADMIN");
                 resp.sendRedirect("DashboardSA.jsp");
             } else {
                 sesion.setAttribute("PERMISOS", "EMPRESA");
-                resp.sendRedirect("index.jsp");
+                resp.sendRedirect("DashboardSA.jsp");
             }
         } else {
             req.setAttribute("errorLogin", "Correo o contraseña incorrectos.");
-            req.getRequestDispatcher("index.jsp").forward(req, resp);
+            req.getRequestDispatcher("loginEmpresarial.jsp").forward(req, resp);
         }
     }
 

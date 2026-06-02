@@ -1,6 +1,8 @@
-package Logica;
+package Logica.DAO;
 
 import Config.Conexion;
+import Logica.modelo.Empleado;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +17,7 @@ public class EmpleadoDAO {
 
     // 1. REGISTRAR
     public int registrar(Empleado emp) {
-        String sql = "INSERT INTO empleado (ID,nombre, email, telefono, cargo, estado, password, empresa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO empleado (ID,nombre, email, telefono, cargo, estado, password, empresa_id) VALUES (?, ?, ?, ?, ?, ?, SHA2(?, 256), ?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -37,22 +39,37 @@ public class EmpleadoDAO {
     }
     // Actualizar colaborador
     public int actualizar(Empleado emp) {
-        String sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=?, empresa_id=? WHERE ID=?";
+        boolean cambiaPassword = (emp.getPassword() != null && !emp.getPassword().trim().isEmpty());
+
+        String sql = "";
+        if (cambiaPassword) sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
+        else sql = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
+
+        // REVISIÓN: Es mejor manejar dos strings SQL claros
+        String sqlConPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=?, password=SHA2(?, 256) WHERE ID=?";
+        String sqlSinPass = "UPDATE empleado SET nombre=?, email=?, telefono=?, cargo=? WHERE ID=?";
+
+        String sqlFinal = cambiaPassword ? sqlConPass : sqlSinPass;
+
         try {
             con = cn.getConnection();
-            ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sqlFinal);
 
             ps.setString(1, emp.getNombre());
             ps.setString(2, emp.getEmail());
             ps.setString(3, emp.getTelefono());
             ps.setString(4, emp.getCargo());
-            ps.setString(5, emp.getPassword());
-            ps.setInt(6, emp.getEmpresa_id());
-            ps.setInt(7, emp.getID()); // El ID del WHERE
+
+            if (cambiaPassword) {
+                ps.setString(5, emp.getPassword());
+                ps.setInt(6, emp.getID());
+            } else {
+                ps.setInt(5, emp.getID());
+            }
 
             return ps.executeUpdate();
         } catch (Exception e) {
-            System.err.println("Error al actualizar empleado en DAO: " + e);
+            System.err.println("Error al actualizar empleado: " + e);
             return 0;
         } finally {
             try { if (ps != null) ps.close(); if (con != null) con.close(); } catch (Exception e) {}
@@ -86,7 +103,7 @@ public class EmpleadoDAO {
         return lista;
     }
 
-    // 3. LISTAR POR EMPRESA (Útil cuando una empresa ve sus propios empleados)
+    // 3. LISTAR POR EMPRESA
     public List<Empleado> listarPorEmpresa(int idEmpresa) {
         List<Empleado> lista = new ArrayList<>();
         String sql = "SELECT * FROM empleado WHERE empresa_id = ?";
@@ -99,13 +116,18 @@ public class EmpleadoDAO {
                 Empleado emp = new Empleado();
                 emp.setID(rs.getInt("ID"));
                 emp.setNombre(rs.getString("nombre"));
+                emp.setEmail(rs.getString("email"));
+                emp.setTelefono(rs.getString("telefono"));
                 emp.setCargo(rs.getString("cargo"));
                 emp.setEstado(rs.getString("estado"));
-                // ... llenar el resto
+                emp.setPassword(rs.getString("password"));
+                emp.setEmpresa_id(rs.getInt("empresa_id"));
                 lista.add(emp);
             }
         } catch (Exception e) {
             System.err.println("Error al filtrar empleados: " + e);
+        } finally {
+            try { if(con != null) con.close(); } catch(Exception e){}
         }
         return lista;
     }
@@ -126,5 +148,34 @@ public class EmpleadoDAO {
         } finally {
             try { if (con != null) con.close(); } catch (Exception e) {}
         }
+    }
+    //5. VALIDAR DATOS PARA INICIO DE SESION
+    public Empleado validar(String email, String password) {
+        Empleado emp = null;
+        // Comparamos el password usando SHA2 para que coincida con el registro
+        String sql = "SELECT * FROM empleado WHERE email = ? AND password = SHA2(?, 256) AND estado = 'ACTIVO'";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                emp = new Empleado();
+                emp.setID(rs.getInt("ID"));
+                emp.setNombre(rs.getString("nombre"));
+                emp.setEmail(rs.getString("email"));
+                emp.setCargo(rs.getString("cargo"));
+                emp.setEmpresa_id(rs.getInt("empresa_id"));
+                emp.setEstado(rs.getString("estado"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error en login empleado: " + e);
+        } finally {
+            try { if (con != null) con.close(); } catch (Exception e) {}
+        }
+        return emp;
     }
 }

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="resources/ControlModal.js"></script>
+    <script src="resources/ControlAdminEmpresas.js"></script>
 
     <meta charset="utf-8">
     <title>Administrar empresas | 4TECH</title>
@@ -29,13 +30,27 @@
             request.setAttribute("titulo", EMPRESA);
         }
     %>
-    <%@ page import="Logica.Empresa" %>
+    <%@ page import="Logica.modelo.Empresa" %>
     <%@ page import="java.util.List" %>
     <%@include file="/Components/header.jsp" %>
     <div class="max-w-6xl mx-auto my-4">
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-bold text-gray-800">Gestión de Empresas</h1>
+            </div>
+            <div class="flex flex-1 w-full max-w-2xl gap-3">
+                <div class="relative flex-1">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fa-solid fa-magnifying-glass w-5 h-5 text-gray-400"></i>
+                </span>
+                    <input
+                            type="text"
+                            id="inputBusqueda"
+                            onkeyup="filtrarEmpresas()"
+                            placeholder="Buscar por nombre, correo o ciudad"
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm shadow-sm"
+                    >
+                </div>
             </div>
         </div>
 
@@ -51,7 +66,7 @@
                     <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider">Acciones</th>
                 </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
+                <tbody id="tablaEmpresas" class="divide-y divide-gray-200 bg-white">
                 <%
                     List<Empresa> lista = (List<Empresa>) session.getAttribute("listEmpresa");
                     if (lista != null && !lista.isEmpty()) {

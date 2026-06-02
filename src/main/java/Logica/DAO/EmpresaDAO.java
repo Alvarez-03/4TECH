@@ -1,6 +1,8 @@
-package Logica;
+package Logica.DAO;
 
 import Config.Conexion;
+import Logica.modelo.Empresa;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +18,7 @@ public class EmpresaDAO {
     // 1. REGISTRAR: Insertamos todos los campos de la clase
     public int registrar(Empresa emp) {
         String sql = "INSERT INTO empresa (email, nombre, ciudad, direccion, telefono, siglas, estado, created_at, update_at, password) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SHA2(?, 256))";
 
         try {
             con = cn.getConnection();
@@ -51,8 +53,6 @@ public class EmpresaDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                // Creamos un objeto vacío (puedes usar un constructor vacío si lo creas en la clase Empresa)
-                // O pasarle valores por defecto al constructor largo:
                 Empresa emp = new Empresa(
                         rs.getInt("ID"),
                         rs.getString("email"),
@@ -75,8 +75,9 @@ public class EmpresaDAO {
     }
 
     // 3. VALIDAR ACCESO (Login)
-    public boolean validarAcceso(String email, String pass) {
-        String sql = "SELECT * FROM empresa WHERE email = ? AND password = ?";
+    public Empresa validarAcceso(String email, String pass) {
+        String sql = "SELECT * FROM empresa WHERE email = ? AND password = SHA2(?, 256)";
+        Empresa emp = null;
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -84,17 +85,35 @@ public class EmpresaDAO {
             ps.setString(2, pass);
             rs = ps.executeQuery();
 
-            return rs.next();
+            if (rs.next()) {
+                emp = new Empresa();
+                emp.setID(rs.getInt("ID"));
+                emp.setEmail(rs.getString("email"));
+                emp.setNombre(rs.getString("nombre"));
+                emp.setCiudad(rs.getString("ciudad"));
+                emp.setDireccion(rs.getString("direccion"));
+                emp.setTelefono(rs.getInt("telefono"));
+                emp.setSiglas(rs.getString("siglas"));
+                emp.setEstado(rs.getString("estado"));
+                emp.setCreated_at(rs.getString("created_at"));
+                emp.setUpdate_at(rs.getString("update_at"));
+            }
         } catch (Exception e) {
             System.err.println("Error en validarAcceso: " + e);
-            return false;
         }
+        return emp;
     }
 
     public int actualizar(Empresa emp) {
-        // El password solo se cambia si el valor enviado no es NULL
-        String sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, "
-                + "password = IFNULL(?, password), estado=?, update_at=? WHERE email=?";
+        boolean cambiarPassword = (emp.getPassword() != null && !emp.getPassword().trim().isEmpty());
+        String sql;
+        if (cambiarPassword) {
+            // SQL con 9 parámetros
+            sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, estado=?, update_at=?, `password`=SHA2(?, 256) WHERE email=?";
+        } else {
+            // SQL con 8 parámetros (sin password)
+            sql = "UPDATE empresa SET nombre=?, ciudad=?, direccion=?, telefono=?, siglas=?, estado=?, update_at=? WHERE email=?";
+        }
 
         String fechaActual = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 
@@ -107,16 +126,53 @@ public class EmpresaDAO {
             ps.setString(3, emp.getDireccion());
             ps.setInt(4, emp.getTelefono());
             ps.setString(5, emp.getSiglas());
-            ps.setString(6, emp.getPassword());
-            ps.setString(7, emp.getEstado());
-            ps.setString(8, fechaActual);
-            ps.setString(9, emp.getEmail());
+            ps.setString(6, emp.getEstado());
+            ps.setString(7, fechaActual);
 
-
+            if (cambiarPassword) {
+                // Si hay password:
+                ps.setString(8, emp.getPassword());
+                ps.setString(9, emp.getEmail());
+            } else {
+                // Si NO hay password:
+                ps.setString(8, emp.getEmail());
+            }
             return ps.executeUpdate();
         } catch (Exception e) {
             System.err.println("Error en DAO actualizar: " + e);
             return 0;
         }
+    }
+
+    public Empresa buscarPorId(int id) {
+        String sql = "SELECT * FROM empresa WHERE ID = ?";
+        Empresa emp = null;
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+
+            // 1. PRIMERO: Pasar el ID al signo de interrogación (?)
+            ps.setInt(1, id);
+
+            // 2. SEGUNDO: EJECUTAR la consulta (esto es lo que faltaba)
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                emp = new Empresa();
+                emp.setID(rs.getInt("ID"));
+                emp.setEmail(rs.getString("email"));
+                emp.setNombre(rs.getString("nombre"));
+                emp.setCiudad(rs.getString("ciudad"));
+                emp.setDireccion(rs.getString("direccion"));
+                emp.setTelefono(rs.getInt("telefono"));
+                emp.setSiglas(rs.getString("siglas"));
+                emp.setEstado(rs.getString("estado"));
+                emp.setCreated_at(rs.getString("created_at"));
+                emp.setUpdate_at(rs.getString("update_at"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error al buscar empresa: " + e.toString());
+        }
+        return emp;
     }
 }

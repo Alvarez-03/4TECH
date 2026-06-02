@@ -1,3 +1,4 @@
+<%@ page import="Logica.modelo.Empresa" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -11,21 +12,34 @@
     <script src="resources/ControlModal.js"></script>
 
     <meta charset="utf-8">
-    <title>DASHBOARD | SUPER ADMIN</title>
+    <title>DASHBOARD</title>
 </head>
 <body class="min-h-screen">
     <%
-        String PERMISOS_DASH= (session.getAttribute("PERMISOS") != null)
-            ? (String)session.getAttribute("PERMISOS")
-            : "EMPRESA";
+        String PERMISOS_DASH = (session.getAttribute("PERMISOS") != null)
+                ? (String) session.getAttribute("PERMISOS")
+                : "EMPRESA";
+        Object userObj = session.getAttribute("usuarioLogueado");
 
-        if (PERMISOS_DASH.equals("SUPERADMIN")) {
+        if ("SUPERADMIN".equals(PERMISOS_DASH)) {
             request.setAttribute("titulo", "Dashboard Super Admin");
-        } else{
-            String EMPRESA = (session.getAttribute("EMPRESA") != null)
-            ? (String)session.getAttribute("EMPRESA")
-            : "4TECH";
-            request.setAttribute("titulo", EMPRESA);
+        } else if ("EMPLEADO".equals(PERMISOS_DASH)) {
+            // Manejo para el Empleado
+            if (userObj instanceof Logica.modelo.Empleado) {
+                Logica.modelo.Empleado empTec = (Logica.modelo.Empleado) userObj;
+                request.setAttribute("titulo", empTec.getNombre());
+            } else {
+                request.setAttribute("titulo", "Panel Técnico");
+            }
+        }
+        else {
+            // Manejo para la Empresa
+            if (userObj instanceof Logica.modelo.Empresa) {
+                Logica.modelo.Empresa empresa = (Logica.modelo.Empresa) userObj;
+                request.setAttribute("titulo", empresa.getNombre());
+            } else {
+                request.setAttribute("titulo", "Panel de Empresa");
+            }
         }
     %>
     <%@include file="/Components/header.jsp" %>
